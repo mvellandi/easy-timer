@@ -1,0 +1,4 @@
+name,duration_hours,duration_minutes,duration_seconds,start_sound,warning_sound,warning_hour,warning_minute,warning_second,end_sound
+Test Phase,0,5,0,TRUE,TRUE,0,1,0,TRUE
+Test Phase,0,5,0,TRUE,TRUE,0,1,0,TRUE
+Test Phase,0,5,0,TRUE,TRUE,0,1,0,TRUE
