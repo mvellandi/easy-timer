@@ -1,0 +1,10 @@
+<div class="relative dbr">
+  <div class="absolute h-full sm:ml-28 md:ml-44 lg:ml-76 xl:ml-96 2xl:ml-112">
+    <button
+      class="btn-back btn-indigo-white"
+      onClick="window.location.href = '<%= Routes.setup_path(@conn, :index) %>';">
+      Back
+    </button>
+  </div>
+  <h1 class="text-center text-4xl"><%= @page_title %></h1>
+</div>

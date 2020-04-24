@@ -1,0 +1,15 @@
+<div class="mx-auto pt-2 dbb">
+  <%= render("nav.html", conn: @conn, page_title: "Custom Timer") %>
+  <%= form_for @conn, Routes.setup_path(@conn, :setup_custom), [multipart: true], fn f -> %>
+
+    <div class="mx-auto my-14 w-7/12 sm:w-5/12 md:w-4/12 lg:w-3/12 dbr">
+      <p class="my-4 text-lg dbb">Please upload a CSV file.<br>Here's a template you can use.</p>
+      <%= file_input f, :file, class: "my-8 dbb" %>
+    </div>
+    <div class="mx-auto flex justify-center dbr">
+      <%= submit "Upload", class: "btn-indigo-white w-40 dbb p-4" %>
+    </div>
+
+  <% end %>
+</div>
+

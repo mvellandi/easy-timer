@@ -1,10 +1,68 @@
 module.exports = {
   theme: {
-    screens: {
-      xs: "410px"
+    fontSize: {
+      xs: ".75rem",
+      sm: ".875rem",
+      base: "1rem",
+      lg: "1.125rem",
+      xl: "1.25rem",
+      "2xl": "1.5rem",
+      "3xl": "1.875rem",
+      "4xl": "2.25rem",
+      "5xl": "3rem",
+      "6xl": "4rem",
+      "7xl": "5rem",
+      "8xl": "6rem",
+      "9xl": "7rem",
     },
-    extend: {}
+    screens: {
+      xs: "410px",
+      sm: "640px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
+      "2xl": "1650px",
+    },
+    extend: {
+      spacing: {
+        "14": "3.5rem",
+        "18": "4.5rem",
+        "22": "5.5rem",
+        "28": "7rem",
+        "36": "9rem",
+        "44": "11rem",
+        "52": "13rem",
+        "60": "15rem",
+        "68": "17rem",
+        "72": "18rem",
+        "76": "19rem",
+        "80": "20rem",
+        "84": "21rem",
+        "88": "22rem",
+        "92": "23rem",
+        "96": "24rem",
+        "104": "26rem",
+        "112": "28rem",
+        "120": "30rem",
+        "128": "32rem",
+      },
+    },
+    inset: {
+      "0": 0,
+      auto: "auto",
+      full: "100%",
+      "1/2": "50%",
+    },
+    borderRadius: {
+      none: 0,
+      sm: "0.375rem",
+      default: "0.5rem",
+      md: "0.75rem",
+      lg: "1rem",
+      xl: "1.5rem",
+      full: "9999px",
+    },
   },
   variants: {},
-  plugins: []
+  plugins: [],
 };

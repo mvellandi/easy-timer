@@ -30,7 +30,6 @@ defmodule EasyTimer.Phase do
         e = %{
           type: "Phase Creation Error",
           phase: "#{data.id}",
-          message: "We've found one or more errors when trying to create a Phase.",
           errors: Enum.reverse(errors)
         }
 
@@ -122,10 +121,7 @@ defmodule EasyTimer.Phase do
             key: key,
             value: hours,
             phase: data.id,
-            message:
-              "Please provide a #{key} value between 0 and #{
-                div(@max_phase_length_seconds, 3_600)
-              } hours."
+            message: "#{key} value between 0 and #{div(@max_phase_length_seconds, 3_600)}."
           })
 
         %{result | errors: [e | errors]}
@@ -137,7 +133,7 @@ defmodule EasyTimer.Phase do
             key: key,
             value: string,
             phase: data.id,
-            message: "Please provide a whole number for #{key}."
+            message: "Whole number for #{key}."
           })
 
         %{result | errors: [e | errors]}
@@ -154,7 +150,7 @@ defmodule EasyTimer.Phase do
             key: key,
             value: time,
             phase: data.id,
-            message: "Please provide a #{key} value between 0 and 59."
+            message: "#{key} value between 0 and 59."
           })
 
         %{result | errors: [e | errors]}
@@ -166,7 +162,7 @@ defmodule EasyTimer.Phase do
             key: key,
             value: string,
             phase: data.id,
-            message: "Please provide a whole number for #{key}."
+            message: "Whole number for #{key}."
           })
 
         %{result | errors: [e | errors]}
@@ -190,7 +186,7 @@ defmodule EasyTimer.Phase do
             value: "hours: #{hours}, minutes: #{mins}, seconds: #{secs}",
             phase: data.id,
             message:
-              "Provide a total duration of at least #{@min_phase_length_seconds} seconds, and less than or equal to #{
+              "Total duration of at least #{@min_phase_length_seconds} seconds, and less than or equal to #{
                 div(@max_phase_length_seconds, 3_600)
               } hours."
           })
@@ -198,16 +194,7 @@ defmodule EasyTimer.Phase do
         %{result | errors: [e | errors]}
       end
     else
-      e =
-        prepare_data_error(%{
-          key: "Total Phase Duration",
-          value: "hours: '#{hours}', minutes: '#{mins}', seconds: '#{secs}'",
-          phase: data.id,
-          message:
-            "Provide some valid whole numbers for duration_hours, duration_minutes, and duration_seconds."
-        })
-
-      %{result | errors: [e | errors]}
+      result
     end
   end
 

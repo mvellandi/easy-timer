@@ -10,12 +10,11 @@ defmodule EasyTimer.Scenario do
     - Bike, 30min
   """
   defstruct server: nil,
-            url: nil,
+            url_slug: nil,
             admin_pin: nil,
             phase_queue: [],
             current_phase: %Phase{},
             rounds: 1,
             current_round: 1,
             status: :created
-
 end

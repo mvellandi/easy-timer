@@ -30,10 +30,11 @@ const tailwindcss = require("tailwindcss");
 
 module.exports = {
   plugins: [
+    require("postcss-import"),
     tailwindcss("./tailwind.config.js"),
     require("autoprefixer"),
     ...(process.argv.includes("production") && process.argv.includes("--mode")
       ? [purgecss]
-      : [])
-  ]
+      : []),
+  ],
 };

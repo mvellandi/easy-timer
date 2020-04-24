@@ -3,12 +3,11 @@ defmodule EasyTimer.Application do
 
   def start(_type, _args) do
     children = [
-      {Registry, keys: :unique, name: EasyTimer.ScenarioRegistry},
+      {Registry, keys: :unique, name: EasyTimer.ScenarioServer},
+      {Phoenix.PubSub, [name: EasyTimer.PubSub]},
       EasyTimer.ScenarioSupervisor,
       EasyTimerWeb.Endpoint
     ]
-
-    :ets.new(:scenarios_table, [:public, :named_table])
 
     opts = [strategy: :one_for_one, name: EasyTimer.Supervisor]
     Supervisor.start_link(children, opts)

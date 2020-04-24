@@ -37,17 +37,13 @@ defmodule EasyTimer.CSV do
       )
     rescue
       File.Error ->
-        {:error, :failed_to_open, nil}
+        {:error, %{type: "file_error", errors: nil}}
     else
       %{errors: [], data: data} ->
-        indexed_data =
-          data
-          |> Enum.reverse()
-
-        {:ok, indexed_data}
+        {:ok, Enum.reverse(data)}
 
       %{errors: errors} ->
-        {:error, :parsing_errors, errors}
+        {:error, %{type: "parsing_errors", errors: errors}}
     end
   end
 end

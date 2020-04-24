@@ -1,0 +1,32 @@
+<div class="mx-auto pt-2 dbb">
+  <%= render("nav.html", conn: @conn, page_title: "Quick Timer") %>
+  <%= form_for @conn, Routes.setup_path(@conn, :setup_quick), fn f -> %>
+    <div class="mx-auto my-8 grid grid-cols-2 dbr">
+
+          <div class="pr-4 flex flex-col justify-center dbb">
+            <%= label f, :hours, class: "leading-none text-right text-3xl" %>
+            <p class="text-sm text-right text-red-500">Max 24</p>
+          </div>
+          <div>
+            <%= number_input f, :hours, class: "pl-8 text-5xl w-24", min: "0", max: "24", value: "00" %>
+          </div>
+
+          <div class="pr-4 flex flex-col justify-center dbb">
+            <%= label f, :minutes, class: "leading-none text-right text-3xl" %>
+            <p class="text-sm text-right text-red-500">0 - 59</p>
+          </div>
+          <%= number_input f, :minutes, class: "pl-8 text-5xl w-24", min: "0", max: "59", value: "05" %>
+
+          <div class="pr-4 flex flex-col justify-center dbb">
+            <%= label f, :seconds, class: "leading-none text-right text-3xl" %>
+            <p class="text-sm text-right text-red-500">0 - 59</p>
+          </div>
+          <%= number_input f, :seconds, class: "pl-8 text-5xl w-24", min: "0", max: "59", value: "00" %>
+    </div>
+
+    <div class="mx-auto flex justify-center dbr">
+      <%= submit "Create", class: "btn-lg btn-green-white w-40 p-4" %>
+    </div>
+  <% end %>
+
+</div>

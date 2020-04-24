@@ -1,0 +1,20 @@
+<div class="mx-auto border-red-500 border-4">
+
+      <div class="mx-auto w-1/2 border-blue-500 border-4">
+        <%= label f, :hours, class: "text-right text-xl" %>
+        <%= number_input f, :hours, class: "w-12" %>
+        <%= error_tag f, :hours %>
+      </div>
+
+      <div class="mx-auto w-1/2 border-blue-500 border-4">
+        <%= label f, :minutes, class: "text-right" %>
+        <%= number_input f, :minutes, class: "w-12" %>
+        <%= error_tag f, :minutes %>
+      </div>
+
+      <div class="mx-auto w-1/2 border-blue-500 border-4">
+        <%= label f, :seconds, class: "text-right" %>
+        <%= number_input f, :seconds, class: "w-12" %>
+        <%= error_tag f, :seconds %>
+      </div>
+  </div>

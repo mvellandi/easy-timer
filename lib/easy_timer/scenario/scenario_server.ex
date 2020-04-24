@@ -1,6 +1,7 @@
 defmodule EasyTimer.ScenarioServer do
   use GenServer
   alias EasyTimer.{Scenario, Timer}
+  alias Phoenix.PubSub
 
   @moduledoc """
   Create and administer a Scenario GenServer with one or more phases.
@@ -19,10 +20,6 @@ defmodule EasyTimer.ScenarioServer do
 
   def authorize_admin(server, pin) do
     GenServer.call(server, {:auth, pin})
-  end
-
-  def scenario_pid(server) do
-    GenServer.call(server, :scenario_pid)
   end
 
   #
@@ -54,7 +51,9 @@ defmodule EasyTimer.ScenarioServer do
   #
 
   def init(scenario) do
-    {:ok, %{scenario | server: self()}}
+    %{url_slug: slug} = scenario
+    Registry.register(EasyTimer.ScenarioServer, slug, self())
+    {:ok, scenario}
   end
 
   defp continue_timer do
@@ -98,10 +97,6 @@ defmodule EasyTimer.ScenarioServer do
     {:reply, state, state}
   end
 
-  def handle_call(:scenario_pid, _from, state) do
-    {:reply, self(), state}
-  end
-
   def handle_cast(:stop, %{current_phase: phase} = state) do
     %{duration_hours: hours, duration_minutes: minutes, duration_seconds: seconds} = phase
     phase = %{phase | calc_remaining_seconds: Timer.calc_seconds(hours, minutes, seconds)}
@@ -119,7 +114,7 @@ defmodule EasyTimer.ScenarioServer do
     {:noreply, state}
   end
 
-  def handle_info(:tick, %{current_phase: phase} = state) do
+  def handle_info(:tick, %{current_phase: phase, url_slug: slug} = state) do
     # Check if state's current phase has run out of time
     # Otherwise,decrement remainder
 
@@ -140,6 +135,11 @@ defmodule EasyTimer.ScenarioServer do
       else
         phase
       end
+
+    IO.puts("ticking on the server #{slug}")
+    key = "scenario:" <> slug
+    IO.puts("Server about to broadcast...")
+    PubSub.broadcast(EasyTimer.PubSub, key, {"tick", phase})
 
     {:noreply, %{state | current_phase: phase}}
   end

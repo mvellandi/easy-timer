@@ -1,0 +1,9 @@
+@tailwind base;
+
+.dbb {
+  @apply border-blue-500 border-4;
+}
+
+.dbr {
+  @apply border-red-500 border-4;
+}

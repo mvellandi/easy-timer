@@ -1,0 +1,19 @@
+<div class="mx-auto pt-2 dbb">
+  <%= render("nav.html", conn: @conn, page_title: "Quick Timer") %>
+  <div class="mx-auto text-center my-16 w-4/5 sm:w-3/5 lg:w-2/5 xl:w-4/12 2xl:w-1/4 dbr">
+    <p class="text-5xl leading-none"><strong>Uh oh!</strong></p>
+    <p class="text-2xl my-4">Please provide:</p>
+    <ul>
+      <%= for item <- @phase_errors do %>
+        <li class="my-8"><%= item.message %></li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="mx-auto flex justify-center w-4/5 sm:w-3/5 lg:w-2/5 xl:w-4/12 2xl:w-1/4 dbr">
+    <button
+      onclick="window.location.href = '<%= Routes.setup_path(@conn, :quick) %>';"
+      class="btn-lg btn-pink-white sm:text-3xl">
+      Edit
+    </button>
+  </div>
+</div>

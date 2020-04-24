@@ -1,0 +1,42 @@
+.btn-lg {
+  @apply block mx-auto w-full p-2 border border-4 rounded-xl text-2xl;
+}
+
+.btn-indigo-white {
+  @apply border-indigo-700 bg-indigo-600 text-white;
+}
+
+.btn-green-white {
+  @apply border-green-700 bg-green-600 text-white;
+}
+
+.btn-pink-white {
+  @apply border-pink-700 bg-pink-600 text-white;
+}
+
+.btn-gray-white {
+  @apply border-gray-700 bg-gray-600 text-white;
+}
+
+.btn-back {
+  @apply relative border-t-4 border-r-4 border-b-4 w-20 h-full rounded-tr rounded-br;
+}
+
+.btn-back:before {
+  @apply absolute pointer-events-none;
+  content: " ";
+  border-top: 27px solid transparent;
+  border-bottom: 27px solid transparent;
+  border-right: 27px solid #4c51bf;
+  top: -4px;
+  left: -27px;
+}
+.btn-back:after {
+  @apply absolute top-full pointer-events-none;
+  content: " ";
+  border-top: 23px solid transparent;
+  border-bottom: 23px solid transparent;
+  border-right: 23px solid #5a67d8;
+  top: 0px;
+  left: -22px;
+}

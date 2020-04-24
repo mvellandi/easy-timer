@@ -1,4 +1,4 @@
-defmodule EasyTimerWeb.PageControllerTest do
+defmodule EasyTimerWeb.SetupControllerTest do
   use EasyTimerWeb.ConnCase
 
   test "GET /", %{conn: conn} do
