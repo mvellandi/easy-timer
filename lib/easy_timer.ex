@@ -35,15 +35,6 @@ defmodule EasyTimer do
   end
 
   def create(_, _), do: {:error, %{type: "invalid_scenario_type", errors: nil}}
-  def create(_, _, _), do: {:error, %{type: "invalid_scenario_type", errors: nil}}
-
-  Python
-  myTuple = ("coordinate1", "coordinate2")
-  myTuple2 = ("coordinate1", "coordinate2")
-
-  my_file = %{file: "file.txt"}
-  create(:custom, my_file)
-  create(:something, "will not work", "still bad")
 
   defp process_custom_timer_data(data) do
     processed_phases =
