@@ -10,7 +10,7 @@ defmodule EasyTimer.Scenario do
     - Bike, 30min
   """
   defstruct server: nil,
-            url_slug: nil,
+            id: nil,
             admin_pin: nil,
             phase_queue: [],
             current_phase: %Phase{},

@@ -18,7 +18,7 @@ defmodule EasyTimer.ScenarioSupervisor do
   Starts a `ScenarioServer` process and supervises it.
   """
   def start_scenario(scenario_args) do
-    %{url_slug: _slug} = scenario_args
+    %{id: id} = scenario_args
 
     child_spec = %{
       id: ScenarioServer,

@@ -1,9 +1,12 @@
 <div class="mx-auto p-4 xs:pt-16 border-blue-500 border-4">
-  <h1 class="mx-auto py-12 text-6xl text-center"><%= @seconds %></h1>
-  <div class="flex">
-    <button phx-click="prev" class="btn-lg btn-gray-white">Prev</button>
-    <button phx-click="start" class="btn-lg btn-gray-white">Start</button>
-    <button phx-click="stop" class="btn-lg btn-gray-white">Stop</button>
-    <button phx-click="next" class="btn-lg btn-gray-white">Next</button>
-  </div>
+  <h1 class="mx-auto py-12 text-6xl text-center"><%= if @alive, do: @seconds, else: "Timer not found or no longer alive" %></h1>
+  <%= if @alive and @admin do %>
+    <div class="flex space-x-2">
+      <button phx-click="previous" class="btn-lg btn-gray-white">Prev</button>
+      <button phx-click="start" class="btn-lg btn-gray-white">Start</button>
+      <button phx-click="pause" class="btn-lg btn-gray-white">Pause</button>
+      <button phx-click="stop" class="btn-lg btn-gray-white">Stop</button>
+      <button phx-click="next" class="btn-lg btn-gray-white">Next</button>
+    </div>
+  <% end %>
 </div>

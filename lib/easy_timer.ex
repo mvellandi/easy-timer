@@ -61,52 +61,64 @@ defmodule EasyTimer do
       current_phase: first,
       phase_queue: rest,
       rounds: length(phases),
-      url_slug: "#{:rand.uniform(999_999)}",
+      id: "#{:rand.uniform(999_999)}",
       admin_pin: :rand.uniform(9999)
     }
 
     {:ok, _pid} = ScenarioSupervisor.start_scenario(scenario)
 
-    %{url_slug: scenario.url_slug, admin_pin: scenario.admin_pin}
+    %{scenario: scenario.id, admin_pin: scenario.admin_pin}
   end
 
-  def start(slug) do
-    IO.puts("Client mounted and starting server...")
+  def start(scenario) do
+    IO.puts("Client mounted and starting scenario...")
 
-    get_server(slug)
+    get_scenario(scenario)
     |> EasyTimer.ScenarioServer.start()
   end
 
-  def stop(slug) do
-    IO.puts("Stopping server...")
+  def stop(scenario) do
+    IO.puts("Stopping scenario...")
 
-    get_server(slug)
+    get_scenario(scenario)
     |> EasyTimer.ScenarioServer.stop()
   end
 
-  def pause(slug) do
-    IO.puts("Pausing server...")
+  def pause(scenario) do
+    IO.puts("Pausing scenario...")
 
-    get_server(slug)
+    get_scenario(scenario)
     |> EasyTimer.ScenarioServer.pause()
   end
 
-  def previous(slug) do
+  def previous(scenario) do
     IO.puts("Attempting to go to previous phase...")
 
-    get_server(slug)
+    get_scenario(scenario)
     |> EasyTimer.ScenarioServer.previous()
   end
 
-  def next(slug) do
+  def next(scenario) do
     IO.puts("Attempting to go to next phase...")
 
-    get_server(slug)
+    get_scenario(scenario)
     |> EasyTimer.ScenarioServer.next()
   end
 
-  defp get_server(slug) do
-    [{pid, _} | _] = Registry.lookup(EasyTimer.ScenarioServer, slug)
-    pid
+  def get_current_time(scenario) do
+    IO.puts("Getting current phase timestamp...")
+
+    %{current_phase: %{calc_remaining_seconds: seconds}} =
+      get_scenario(scenario)
+      |> EasyTimer.ScenarioServer.get_current_time()
+
+    to_string(seconds)
+  end
+
+  def get_scenario(scenario) do
+    case Registry.lookup(EasyTimer.ScenarioServer, scenario) do
+      [{pid, _} | _] -> pid
+      [] -> {:error, "Scenario not found or no longer alive"}
+    end
   end
 end

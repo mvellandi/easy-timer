@@ -5,7 +5,7 @@
       <p class="mb-2 text-5xl text-center dbb">Success!</p>
       <p class="text-lg text-center dbb">Your timer is live at:</p>
       <p class="text-lg text-center dbb"><%= @host %></p>
-      <p class="my-2 text-4xl bg-pink-300 text-center dbb"><strong><%= @slug %></strong></p>
+      <p class="my-2 text-4xl bg-pink-300 text-center dbb"><strong><%= @scenario %></strong></p>
       <p class="text-lg text-center dbb">your admin pin code is:</p>
       <p class="mt-4 text-4xl text-center dbb"><strong><%= @pin %></strong></p>
     </div>
@@ -16,7 +16,7 @@
         Copy Link
       </button>
       <button
-        onclick="window.location.href = '<%= @host <> @slug %>';"
+        onclick="window.location.href = '<%= @host <> @scenario %>';"
         class="btn-lg btn-green-white sm:text-3xl">
         Go
       </button>

@@ -26,6 +26,10 @@ defmodule EasyTimer.ScenarioServer do
   # API
   #
 
+  def get_current_time(server) do
+    GenServer.call(server, :current)
+  end
+
   def start(server) do
     GenServer.call(server, :start)
   end
@@ -51,8 +55,8 @@ defmodule EasyTimer.ScenarioServer do
   #
 
   def init(scenario) do
-    %{url_slug: slug} = scenario
-    Registry.register(EasyTimer.ScenarioServer, slug, self())
+    %{id: id} = scenario
+    Registry.register(EasyTimer.ScenarioServer, id, self())
     {:ok, scenario}
   end
 
@@ -60,7 +64,7 @@ defmodule EasyTimer.ScenarioServer do
     Timer.send_after_second(self(), :tick)
   end
 
-  def handle_call(:get, _from, state) do
+  def handle_call(:current, _from, state) do
     {:reply, state, state}
   end
 
@@ -94,13 +98,31 @@ defmodule EasyTimer.ScenarioServer do
   end
 
   def handle_call(:pause, _from, state) do
+    state = %{state | status: :paused}
     {:reply, state, state}
   end
 
-  def handle_cast(:stop, %{current_phase: phase} = state) do
+  # TODO: How to handle timeout() on final phase in queue ?
+  # Merely pattern matching stop on empty phase queue conflicts with stop action when there's NO timeout
+  # This is probably best handled by TICK when remaining is 0
+  # Call regular timeout if there is a next phase
+  # Call alt timeout if there is no more phases
+  #
+  # def handle_cast(:stop, %{phase_queue: [], id: id} = state) do
+  #   state = %{state | status: :stopped}
+  #   key = "scenario:" <> id
+  #   IO.puts("Server: Stop")
+  #   PubSub.broadcast(EasyTimer.PubSub, key, {"complete", nil})
+  #   {:noreply, state}
+  # end
+
+  def handle_cast(:stop, %{current_phase: phase, id: id} = state) do
     %{duration_hours: hours, duration_minutes: minutes, duration_seconds: seconds} = phase
     phase = %{phase | calc_remaining_seconds: Timer.calc_seconds(hours, minutes, seconds)}
     state = %{state | status: :stopped, current_phase: phase}
+    key = "scenario:" <> id
+    IO.puts("Server: Stop")
+    PubSub.broadcast(EasyTimer.PubSub, key, {"stop", phase})
     {:noreply, state}
   end
 
@@ -114,9 +136,10 @@ defmodule EasyTimer.ScenarioServer do
     {:noreply, state}
   end
 
-  def handle_info(:tick, %{current_phase: phase, url_slug: slug} = state) do
+  def handle_info(:tick, %{current_phase: phase, id: id} = state) do
     # Check if state's current phase has run out of time
     # Otherwise,decrement remainder
+    key = "scenario:" <> id
 
     phase =
       if state.status == :started do
@@ -126,8 +149,12 @@ defmodule EasyTimer.ScenarioServer do
           end)
 
         case remaining do
-          0 -> timeout()
-          _ -> nil
+          0 ->
+            timeout()
+
+          _ ->
+            IO.puts("Server: Tick")
+            PubSub.broadcast(EasyTimer.PubSub, key, {"tick", phase})
         end
 
         continue_timer()
@@ -135,11 +162,6 @@ defmodule EasyTimer.ScenarioServer do
       else
         phase
       end
-
-    IO.puts("ticking on the server #{slug}")
-    key = "scenario:" <> slug
-    IO.puts("Server about to broadcast...")
-    PubSub.broadcast(EasyTimer.PubSub, key, {"tick", phase})
 
     {:noreply, %{state | current_phase: phase}}
   end
