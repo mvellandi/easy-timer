@@ -9,8 +9,7 @@ defmodule EasyTimer.Scenario do
     - Weight lifting, 20min
     - Bike, 30min
   """
-  defstruct server: nil,
-            id: nil,
+  defstruct id: nil,
             admin_pin: nil,
             phase_queue: [],
             current_phase: %Phase{},
