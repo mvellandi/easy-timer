@@ -7,7 +7,7 @@
       <p class="text-lg text-center dbb"><%= @host %></p>
       <p class="my-2 text-4xl bg-pink-300 text-center dbb"><strong><%= @scenario_id %></strong></p>
       <p class="text-lg text-center dbb">your admin pin code is:</p>
-      <p class="mt-4 text-4xl text-center dbb"><strong><%= @pin %></strong></p>
+      <p class="mt-4 text-4xl text-center dbb"><strong><%= @admin_pin %></strong></p>
     </div>
 
     <div class="flex mx-auto w-4/5 sm:w-3/5 lg:w-2/5 xl:w-4/12 2xl:w-1/4 dbr">

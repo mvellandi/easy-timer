@@ -1,4 +1,6 @@
-name,duration_hours,duration_minutes,duration_seconds,start_sound,warning_sound,warning_hour,warning_minute,warning_second,end_sound
-Test Phase,0,5,0,TRUE,TRUE,0,1,0,TRUE
-Test Phase,0,5,0,TRUE,TRUE,0,1,0,TRUE
-Test Phase,0,5,0,TRUE,TRUE,0,1,0,TRUE
+name,duration_hours,duration_minutes,duration_seconds,start_sound,warning_sound,end_sound,warning_hour,warning_minute,warning_second
+Warmup,0,0,5,TRUE,TRUE,TRUE,0,1,0
+Chest and Triceps,0,0,5,TRUE,TRUE,TRUE,0,1,0
+Abs,0,0,5,TRUE,TRUE,TRUE,0,5,0
+Lower Back,0,0,5,TRUE,TRUE,TRUE,0,1,0
+Jog,0,0,5,TRUE,TRUE,TRUE,0,1,0

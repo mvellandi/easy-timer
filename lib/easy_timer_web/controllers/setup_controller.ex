@@ -26,7 +26,7 @@ defmodule EasyTimerWeb.SetupController do
 
         render(conn, "success.html",
           page_title: "Quick Timer",
-          pin: pin,
+          admin_pin: pin,
           host: host,
           scenario_id: scenario_id
         )
@@ -43,7 +43,7 @@ defmodule EasyTimerWeb.SetupController do
 
         render(conn, "success.html",
           page_title: "Custom Timer",
-          pin: pin,
+          admin_pin: pin,
           host: host,
           scenario_id: scenario_id
         )

@@ -61,8 +61,8 @@ defmodule EasyTimer do
       current_phase: first,
       phase_queue: rest,
       rounds: length(phases),
-      id: "#{:rand.uniform(999_999)}",
-      admin_pin: :rand.uniform(9999)
+      id: "#{gen_scenario_id()}",
+      admin_pin: "#{gen_admin_pin()}"
     }
 
     {:ok, _pid} = ScenarioSupervisor.start_scenario(scenario)
@@ -120,5 +120,15 @@ defmodule EasyTimer do
       [{pid, _} | _] -> pid
       [] -> {:error, "Scenario not found or no longer alive"}
     end
+  end
+
+  defp gen_scenario_id do
+    n = :rand.uniform(999_999)
+    if n < 1000, do: gen_admin_pin(), else: n
+  end
+
+  defp gen_admin_pin do
+    n = :rand.uniform(9999)
+    if n < 1000, do: gen_admin_pin(), else: n
   end
 end

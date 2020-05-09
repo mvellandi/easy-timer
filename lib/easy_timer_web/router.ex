@@ -21,7 +21,7 @@ defmodule EasyTimerWeb.Router do
     # live "/", Setup
     # live "/quick", Setup
     # live "/custom", Setup
-    live "/pagelive", PageLive, :index
+    # live "/pagelive", PageLive, :index
     live "/live/:scenario", Timer
 
     get "/", SetupController, :index
