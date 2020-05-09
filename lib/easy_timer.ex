@@ -67,7 +67,7 @@ defmodule EasyTimer do
 
     {:ok, _pid} = ScenarioSupervisor.start_scenario(scenario)
 
-    %{scenario: scenario.id, admin_pin: scenario.admin_pin}
+    %{scenario_id: scenario.id, admin_pin: scenario.admin_pin}
   end
 
   def start(scenario) do
@@ -115,8 +115,8 @@ defmodule EasyTimer do
     to_string(seconds)
   end
 
-  def get_scenario(scenario) do
-    case Registry.lookup(EasyTimer.ScenarioServer, scenario) do
+  def get_scenario(scenario_id) do
+    case Registry.lookup(EasyTimer.ScenarioServer, scenario_id) do
       [{pid, _} | _] -> pid
       [] -> {:error, "Scenario not found or no longer alive"}
     end
