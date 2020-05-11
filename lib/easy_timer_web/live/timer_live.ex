@@ -1,16 +1,16 @@
-defmodule EasyTimerWeb.Timer do
+defmodule EasyTimerWeb.TimerLive do
   use Phoenix.LiveView
   alias Phoenix.PubSub
 
-  def mount(%{"scenario" => scenario} = _params, _session, socket) do
+  def mount(%{"scenario_id" => scenario_id} = _params, _session, socket) do
     {alive, seconds} =
-      if scenario_alive?(scenario),
-        do: {true, EasyTimer.get_current_time(scenario)},
+      if scenario_alive?(scenario_id),
+        do: {true, EasyTimer.get_current_time(scenario_id)},
         else: {false, nil}
 
     if connected?(socket) do
       IO.puts("second mount: connected")
-      key = "scenario:" <> scenario
+      key = "scenario:" <> scenario_id
       PubSub.subscribe(EasyTimer.PubSub, key)
     else
       IO.puts("first mount: static render")
@@ -18,35 +18,35 @@ defmodule EasyTimerWeb.Timer do
 
     {:ok,
      assign(socket,
-       scenario: scenario,
+       scenario_id: scenario_id,
        alive: alive,
        admin: true,
        seconds: seconds
      )}
   end
 
-  def handle_event("start", _params, %{assigns: %{scenario: scenario}} = socket) do
-    EasyTimer.start(scenario)
+  def handle_event("start", _params, %{assigns: %{scenario_id: scenario_id}} = socket) do
+    EasyTimer.start(scenario_id)
     {:noreply, socket}
   end
 
-  def handle_event("pause", _params, %{assigns: %{scenario: scenario}} = socket) do
-    EasyTimer.pause(scenario)
+  def handle_event("pause", _params, %{assigns: %{scenario_id: scenario_id}} = socket) do
+    EasyTimer.pause(scenario_id)
     {:noreply, socket}
   end
 
-  def handle_event("stop", _params, %{assigns: %{scenario: scenario}} = socket) do
-    EasyTimer.stop(scenario)
+  def handle_event("stop", _params, %{assigns: %{scenario_id: scenario_id}} = socket) do
+    EasyTimer.stop(scenario_id)
     {:noreply, socket}
   end
 
-  def handle_event("previous", _params, %{assigns: %{scenario: _scenario}} = socket) do
-    # EasyTimer.previous(scenario)
+  def handle_event("previous", _params, %{assigns: %{scenario_id: _scenario_id}} = socket) do
+    # EasyTimer.previous(scenario_id)
     {:noreply, socket}
   end
 
-  def handle_event("next", _params, %{assigns: %{scenario: _scenario}} = socket) do
-    # EasyTimer.next(scenario)
+  def handle_event("next", _params, %{assigns: %{scenario_id: _scenario_id}} = socket) do
+    # EasyTimer.next(scenario_id)
     {:noreply, socket}
   end
 

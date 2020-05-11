@@ -21,12 +21,12 @@ defmodule EasyTimerWeb.SetupController do
            duration_minutes: mins,
            duration_seconds: secs
          }) do
-      {:ok, %{scenario_id: scenario_id, admin_pin: pin}} ->
+      %{scenario_id: scenario_id, admin_pin: admin_pin} ->
         host = "http://localhost:4000/live/"
 
         render(conn, "success.html",
           page_title: "Quick Timer",
-          admin_pin: pin,
+          admin_pin: admin_pin,
           host: host,
           scenario_id: scenario_id
         )
@@ -38,12 +38,12 @@ defmodule EasyTimerWeb.SetupController do
 
   def setup_custom(conn, %{"file" => file}) do
     case EasyTimer.create(:custom, %{file: file.path}) do
-      {:ok, %{scenario_id: scenario_id, admin_pin: pin}} ->
+      %{scenario_id: scenario_id, admin_pin: admin_pin} ->
         host = "http://localhost:4000/live/"
 
         render(conn, "success.html",
           page_title: "Custom Timer",
-          admin_pin: pin,
+          admin_pin: admin_pin,
           host: host,
           scenario_id: scenario_id
         )

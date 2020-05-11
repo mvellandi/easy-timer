@@ -24,7 +24,7 @@ defmodule EasyTimer.Phase do
   def create(scenario_type, data) do
     with :ok <- validate_keys(data, scenario_type),
          {:ok, updated_data} <- validate_data(data, scenario_type) do
-      {:ok, struct(Phase, updated_data)}
+      struct(Phase, updated_data)
     else
       errors ->
         e = %{

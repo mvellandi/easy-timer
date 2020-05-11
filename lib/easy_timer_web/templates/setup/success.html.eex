@@ -11,8 +11,15 @@
     </div>
 
     <div class="flex mx-auto w-4/5 sm:w-3/5 lg:w-2/5 xl:w-4/12 2xl:w-1/4 dbr">
-      <%= link("Copy Link", to: "/", class: "btn-lg mr-4 text-center btn-pink-white sm:text-3xl") %>
-      <%= link("Go", to: "#{@host <> @scenario_id}", class: "btn-lg text-center btn-green-white sm:text-3xl") %>
+      <button
+        class="btn-lg mr-4 text-center btn-pink-white sm:text-3xl">
+        Copy Link
+      </button>
+      <button
+        onclick="window.location.href = '<%= @host <> @scenario_id %>';"
+        class="btn-lg text-center btn-green-white sm:text-3xl">
+        Go
+      </button>
     </div>
 
 </div>

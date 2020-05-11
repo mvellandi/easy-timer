@@ -8,16 +8,16 @@ defmodule EasyTimer do
   @doc """
   Create a new scenario server with client options.
   Client receives either:
-    - Pid to store in conn.session ?, (url slug to lookup named server option), so client can interact with its scenario server.
+    - Scenario ID (for Registry PID lookup), scenario admin pin code
     - Error(s) map
 
     Note: https://hexdocs.pm/elixir/GenServer.html#module-name-registration
   """
   def create(:quick, data) when is_map(data) do
     case Phase.create(:quick, Map.put(data, :id, 1)) do
-      {:ok, phase} ->
-        response = setup_timer([phase])
-        {:ok, response}
+      %Phase{} = phase ->
+        scenario = setup_timer([phase])
+        %{scenario_id: scenario.id, admin_pin: scenario.admin_pin}
 
       {:error, %{} = response} ->
         {:error, %{type: "phase_init_errors", errors: response.errors}}
@@ -27,8 +27,8 @@ defmodule EasyTimer do
   def create(:custom, %{file: file}) do
     with {:ok, data} <- CSV.load(file),
          {:ok, phases} <- process_custom_timer_data(data) do
-      response = setup_timer(phases)
-      {:ok, response}
+      scenario = setup_timer(phases)
+      %{scenario_id: scenario.id, admin_pin: scenario.admin_pin}
     else
       {:error, %{} = response} -> {:error, response}
     end
@@ -40,7 +40,7 @@ defmodule EasyTimer do
     processed_phases =
       Enum.map(data, fn item ->
         case Phase.create(:custom, item) do
-          {:ok, phase} -> phase
+          %Phase{} = phase -> phase
           error -> error
         end
       end)
@@ -67,7 +67,7 @@ defmodule EasyTimer do
 
     {:ok, _pid} = ScenarioSupervisor.start_scenario(scenario)
 
-    %{scenario_id: scenario.id, admin_pin: scenario.admin_pin}
+    scenario
   end
 
   def start(scenario) do
@@ -115,8 +115,8 @@ defmodule EasyTimer do
     to_string(seconds)
   end
 
-  def get_scenario(scenario_id) do
-    case Registry.lookup(EasyTimer.ScenarioServer, scenario_id) do
+  def get_scenario(scenario) do
+    case Registry.lookup(EasyTimer.ScenarioServer, scenario) do
       [{pid, _} | _] -> pid
       [] -> {:error, "Scenario not found or no longer alive"}
     end
