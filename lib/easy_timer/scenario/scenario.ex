@@ -12,6 +12,7 @@ defmodule EasyTimer.Scenario do
   defstruct id: nil,
             admin_pin: nil,
             phase_queue: [],
+            phases_completed: [],
             current_phase: %Phase{},
             rounds: 1,
             current_round: 1,

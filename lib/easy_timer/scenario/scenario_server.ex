@@ -14,10 +14,6 @@ defmodule EasyTimer.ScenarioServer do
     GenServer.start_link(__MODULE__, state)
   end
 
-  def get(server) do
-    GenServer.call(server, :get)
-  end
-
   def authorize_admin(server, pin) do
     GenServer.call(server, {:auth, pin})
   end
@@ -26,8 +22,8 @@ defmodule EasyTimer.ScenarioServer do
   # API
   #
 
-  def get_current_time(server) do
-    GenServer.call(server, :current)
+  def get(server) do
+    GenServer.call(server, :get)
   end
 
   def start(server) do
@@ -64,7 +60,7 @@ defmodule EasyTimer.ScenarioServer do
     Timer.send_after_second(self(), :tick)
   end
 
-  def handle_call(:current, _from, state) do
+  def handle_call(:get, _from, state) do
     {:reply, state, state}
   end
 
@@ -80,12 +76,10 @@ defmodule EasyTimer.ScenarioServer do
           state
 
         :paused ->
-          # TODO tell Timer to resume counting down
           continue_timer()
           %{state | status: :started}
 
         :stopped ->
-          # TODO tell Timer to restart the clock from the beginning
           continue_timer()
           %{state | status: :started}
 
@@ -102,19 +96,17 @@ defmodule EasyTimer.ScenarioServer do
     {:reply, state, state}
   end
 
-  # TODO: How to handle timeout() on final phase in queue ?
-  # Merely pattern matching stop on empty phase queue conflicts with stop action when there's NO timeout
-  # This is probably best handled by TICK when remaining is 0
-  # Call regular timeout if there is a next phase
-  # Call alt timeout if there is no more phases
-  #
-  # def handle_cast(:stop, %{phase_queue: [], id: id} = state) do
-  #   state = %{state | status: :stopped}
-  #   key = "scenario:" <> id
-  #   IO.puts("Server: Stop")
-  #   PubSub.broadcast(EasyTimer.PubSub, key, {"complete", nil})
-  #   {:noreply, state}
-  # end
+  def handle_cast(:next, %{phase_queue: []} = state) do
+    stop(self())
+    {:noreply, state}
+  end
+  
+  # TODO: Handle :previous phase actions
+  # use two stacks (completed/remaining) and transfer phases accordingly between them and current_phase
+  def handle_cast(:next, %{phase_queue: [next_phase | queue]} = state) do
+    state = %{state | current_phase: next_phase, phase_queue: queue}
+    {:noreply, state}
+  end
 
   def handle_cast(:stop, %{current_phase: phase, id: id} = state) do
     %{duration_hours: hours, duration_minutes: minutes, duration_seconds: seconds} = phase
@@ -125,17 +117,7 @@ defmodule EasyTimer.ScenarioServer do
     PubSub.broadcast(EasyTimer.PubSub, key, {"stop", phase})
     {:noreply, state}
   end
-
-  def handle_cast(:next, %{phase_queue: []} = state) do
-    stop(self())
-    {:noreply, state}
-  end
-
-  def handle_cast(:next, %{phase_queue: [next_phase | queue]} = state) do
-    state = %{state | current_phase: next_phase, phase_queue: queue}
-    {:noreply, state}
-  end
-
+  
   def handle_info(:tick, %{current_phase: phase, id: id} = state) do
     # Check if state's current phase has run out of time
     # Otherwise,decrement remainder
@@ -167,7 +149,7 @@ defmodule EasyTimer.ScenarioServer do
   end
 
   defp timeout do
-    IO.puts("Phase complete, moving on...")
+    IO.puts("Server: Phase complete, moving on...")
     # Move current to end of queue. Load new phase from queue into current phase.
     next(self())
   end
