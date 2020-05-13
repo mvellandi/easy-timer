@@ -15,6 +15,6 @@ defmodule EasyTimer.Scenario do
             current_phase: %Phase{},
             next_phases: [],
             previous_phases: [],
-            rounds: 1,
-            status: :created
+            status: :created,
+            total_rounds: 1
 end

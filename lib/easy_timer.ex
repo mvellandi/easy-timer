@@ -47,7 +47,7 @@ defmodule EasyTimer do
 
     if Enum.all?(
          processed_phases,
-         &(is_map(&1) and Map.get(&1, :__struct__) == :"Elixir.EasyTimer.Phase")
+         &(is_struct(&1) and Map.get(&1, :__struct__) == :"Elixir.EasyTimer.Phase")
        ) do
       {:ok, processed_phases}
     else
@@ -60,7 +60,7 @@ defmodule EasyTimer do
     scenario = %Scenario{
       current_phase: first,
       next_phases: rest,
-      rounds: length(phases),
+      total_rounds: length(phases),
       id: "#{gen_scenario_id()}",
       admin_pin: "#{gen_admin_pin()}"
     }
@@ -72,31 +72,26 @@ defmodule EasyTimer do
 
   def start(scenario) do
     IO.puts("API: starting scenario server PID:")
-    IO.inspect(scenario)
     EasyTimer.ScenarioServer.start(scenario)
   end
-  
+
   def stop(scenario) do
     IO.puts("API: Stopping scenario server PID:")
-    IO.inspect(scenario)
     EasyTimer.ScenarioServer.stop(scenario)
   end
-  
+
   def pause(scenario) do
     IO.puts("API: Pausing scenario server PID:")
-    IO.inspect(scenario)
     EasyTimer.ScenarioServer.pause(scenario)
   end
-  
+
   def previous(scenario) do
     IO.puts("API: Attempting to go to previous phase on scenario server PID:")
-    IO.inspect(scenario)
     EasyTimer.ScenarioServer.previous(scenario)
   end
-  
+
   def next(scenario) do
     IO.puts("API: Attempting to go to next phase on scenario server PID:")
-    IO.inspect(scenario)
     EasyTimer.ScenarioServer.next(scenario)
   end
 
@@ -111,7 +106,6 @@ defmodule EasyTimer do
 
   def get_scenario_data(scenario) do
     IO.puts("API: Getting scenario data for server PID:")
-    IO.inspect(scenario)
     EasyTimer.ScenarioServer.get(scenario)
   end
 

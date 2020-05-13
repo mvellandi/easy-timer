@@ -4,6 +4,7 @@ defmodule EasyTimerWeb.TimerLive do
 
   def mount(%{"scenario_id" => scenario_id} = _params, _session, socket) do
     IO.puts("Client: mounted")
+
     server =
       case EasyTimer.get_scenario(scenario_id) do
         server when is_pid(server) ->
@@ -26,33 +27,35 @@ defmodule EasyTimerWeb.TimerLive do
         IO.puts("Client: requesting scenario data")
         scenario = EasyTimer.get_scenario_data(server)
         IO.puts("Client: received scenario data:")
-        IO.inspect(scenario)
         scenario
       else
         nil
       end
 
-    status = case is_pid(server) do
-      true -> if is_map(scenario), do: :loaded, else: :loading
-      _ -> :error
-    end
+    status =
+      case is_pid(server) do
+        true -> if is_map(scenario), do: :loaded, else: :loading
+        _ -> :error
+      end
 
-    {scenario_type, seconds} = case status do
-      :loaded ->
-        type = if length(scenario.next_phases) == 0, do: :quick, else: :custom
-        seconds = scenario.current_phase.calc_remaining_seconds
-        {type, seconds}
-      _ ->
-        {nil, nil}
-    end
+    {scenario_type, seconds} =
+      case status do
+        :loaded ->
+          type = if length(scenario.next_phases) == 0, do: :quick, else: :custom
+          seconds = scenario.current_phase.calc_remaining_seconds
+          {type, seconds}
+
+        _ ->
+          {nil, nil}
+      end
 
     {:ok,
      assign(socket,
-      status: status,
-      server: server,
-      admin: true,
-      scenario_type: scenario_type,
-      seconds: seconds
+       status: status,
+       server: server,
+       admin: true,
+       scenario_type: scenario_type,
+       seconds: seconds
      )}
   end
 
@@ -67,7 +70,7 @@ defmodule EasyTimerWeb.TimerLive do
     EasyTimer.pause(server)
     {:noreply, socket}
   end
-  
+
   def handle_event("stop", _params, %{assigns: %{server: server}} = socket) do
     IO.puts("Client: requesting stop")
     EasyTimer.stop(server)
@@ -90,8 +93,7 @@ defmodule EasyTimerWeb.TimerLive do
   end
 
   def handle_info({"reset", phase}, socket) do
-    IO.puts("Client: Stop, Reset, and maybe Change Phase")
-    IO.inspect(phase)
+    IO.puts("Client: Stop, Reset, and Update Phase")
     {:noreply, assign(socket, :seconds, phase.calc_remaining_seconds)}
   end
 end
