@@ -26,7 +26,7 @@ defmodule EasyTimerWeb.TimerLive do
         PubSub.subscribe(EasyTimer.PubSub, key)
         IO.puts("Client: requesting scenario data")
         scenario = EasyTimer.get_scenario_data(server)
-        IO.puts("Client: received scenario data:")
+        IO.puts("Client: received scenario data")
         scenario
       else
         nil

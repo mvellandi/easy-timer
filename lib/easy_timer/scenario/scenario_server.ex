@@ -55,10 +55,6 @@ defmodule EasyTimer.ScenarioServer do
     {:ok, scenario}
   end
 
-  defp continue_timer do
-    Timer.send_after_second(self(), :tick)
-  end
-
   def handle_call(:get, _from, scenario) do
     {:reply, scenario, scenario}
   end
@@ -68,21 +64,12 @@ defmodule EasyTimer.ScenarioServer do
   end
 
   def handle_call(:start, _from, %{status: status} = scenario) do
-    # %{status: status} =
     scenario =
       case status do
         :started ->
           scenario
 
-        :paused ->
-          continue_timer()
-          %{scenario | status: :started}
-
-        :stopped ->
-          continue_timer()
-          %{scenario | status: :started}
-
-        :created ->
+        _ ->
           continue_timer()
           %{scenario | status: :started}
       end
@@ -95,62 +82,18 @@ defmodule EasyTimer.ScenarioServer do
     {:reply, scenario, scenario}
   end
 
-  def handle_cast(:next, %{next_phases: []} = scenario) do
-    {:noreply, scenario}
-  end
+  def handle_cast(:previous, %Scenario{previous_phases: []} = scenario), do: {:noreply, scenario}
+  def handle_cast(:next, %Scenario{next_phases: []} = scenario), do: {:noreply, scenario}
 
-  def handle_cast(
-        :next,
-        %{
-          previous_phases: previous,
-          current_phase: current,
-          next_phases: [next | next_rest],
-          id: id
-        } = scenario
-      ) do
-    %{current_phase: current} = scenario = reset_phase(scenario)
-
-    scenario = %{
-      scenario
-      | previous_phases: [current | previous],
-        current_phase: next,
-        next_phases: next_rest
-    }
-
-    IO.puts("Server: Stop, Reset, and Go to Next Phase")
-    broadcast(scenario.id, {"reset", next})
-    {:noreply, scenario}
-  end
-
-  def handle_cast(:previous, %{previous_phases: []} = scenario) do
-    {:noreply, scenario}
-  end
-
-  def handle_cast(
-        :previous,
-        %{
-          previous_phases: [previous | previous_rest],
-          current_phase: current,
-          next_phases: next,
-          id: id
-        } = scenario
-      ) do
-    %{current_phase: current} = scenario = reset_phase(scenario)
-
-    scenario = %{
-      scenario
-      | previous_phases: previous_rest,
-        current_phase: previous,
-        next_phases: [current | next]
-    }
-
-    IO.puts("Server: Stop, Reset, and Go to Previous Phase")
-    broadcast(scenario.id, {"reset", previous})
+  def handle_cast(action, %Scenario{} = scenario) when action in [:next, :previous] do
+    IO.puts("Server: stop and reset")
+    scenario = reset_phase(scenario) |> change_phase(action)
+    broadcast(scenario.id, {"reset", scenario.current_phase})
     {:noreply, scenario}
   end
 
   def handle_cast(:stop, %Scenario{} = scenario) do
-    IO.puts("Server: Stop and Reset")
+    IO.puts("Server: stop and reset")
     scenario = reset_phase(scenario)
     broadcast(scenario.id, {"reset", scenario.current_phase})
     {:noreply, scenario}
@@ -186,8 +129,28 @@ defmodule EasyTimer.ScenarioServer do
     PubSub.broadcast(EasyTimer.PubSub, "scenario:#{id}", message)
   end
 
-  defp change_phase(scenario, _direction) do
-    scenario
+  defp change_phase(
+         %Scenario{previous_phases: pp, current_phase: c, next_phases: np} = scenario,
+         direction
+       ) do
+    IO.puts("Server: going to #{Atom.to_string(direction)} phase")
+
+    {pp, cp, np} =
+      case direction do
+        :previous -> {tl(pp), hd(pp), [c | np]}
+        :next -> {[c | pp], hd(np), tl(np)}
+      end
+
+    %Scenario{
+      scenario
+      | previous_phases: pp,
+        current_phase: cp,
+        next_phases: np
+    }
+  end
+
+  defp continue_timer() do
+    Timer.send_after_second(self(), :tick)
   end
 
   defp reset_phase(
@@ -201,7 +164,7 @@ defmodule EasyTimer.ScenarioServer do
   end
 
   defp timeout do
-    IO.puts("Server: Phase complete, moving on...")
+    IO.puts("Server: phase complete, moving on...")
     next(self())
   end
 end
