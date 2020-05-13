@@ -39,7 +39,7 @@ defmodule EasyTimerWeb.TimerLive do
 
     {scenario_type, seconds} = case status do
       :loaded ->
-        type = if length(scenario.phase_queue) == 0, do: :quick, else: :custom
+        type = if length(scenario.next_phases) == 0, do: :quick, else: :custom
         seconds = scenario.current_phase.calc_remaining_seconds
         {type, seconds}
       _ ->
@@ -89,8 +89,9 @@ defmodule EasyTimerWeb.TimerLive do
     {:noreply, assign(socket, :seconds, phase.calc_remaining_seconds)}
   end
 
-  def handle_info({"stop", phase}, socket) do
-    IO.puts("Client: Stop")
+  def handle_info({"reset", phase}, socket) do
+    IO.puts("Client: Stop, Reset, and maybe Change Phase")
+    IO.inspect(phase)
     {:noreply, assign(socket, :seconds, phase.calc_remaining_seconds)}
   end
 end

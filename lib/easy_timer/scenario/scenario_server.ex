@@ -1,6 +1,6 @@
 defmodule EasyTimer.ScenarioServer do
   use GenServer
-  alias EasyTimer.{Scenario, Timer}
+  alias EasyTimer.{Scenario, Timer, Phase}
   alias Phoenix.PubSub
 
   @moduledoc """
@@ -39,7 +39,7 @@ defmodule EasyTimer.ScenarioServer do
   end
 
   def previous(server) do
-    GenServer.call(server, :previous)
+    GenServer.cast(server, :previous)
   end
 
   def next(server) do
@@ -51,8 +51,7 @@ defmodule EasyTimer.ScenarioServer do
   #
 
   def init(scenario) do
-    %{id: id} = scenario
-    Registry.register(EasyTimer.ScenarioServer, id, self())
+    Registry.register(EasyTimer.ScenarioServer, scenario.id, self())
     {:ok, scenario}
   end
 
@@ -96,31 +95,38 @@ defmodule EasyTimer.ScenarioServer do
     {:reply, state, state}
   end
 
-  def handle_cast(:next, %{phase_queue: []} = state) do
-    stop(self())
+  def handle_cast(:next, %{next_phases: []} = state) do
     {:noreply, state}
   end
   
-  # TODO: Handle :previous phase actions
-  # use two stacks (completed/remaining) and transfer phases accordingly between them and current_phase
-  def handle_cast(:next, %{phase_queue: [next_phase | queue]} = state) do
-    state = %{state | current_phase: next_phase, phase_queue: queue}
+  def handle_cast(:next, %{previous_phases: previous, current_phase: current, next_phases: [next | next_rest], id: id} = state) do
+    %{current_phase: current} = state = reset_phase(current, state)
+    state = %{state | previous_phases: [current | previous], current_phase: next, next_phases: next_rest}
+    IO.puts("Server: Stop, Reset, and Go to Next Phase")
+    broadcast(id, {"reset", next})
     {:noreply, state}
   end
 
-  def handle_cast(:stop, %{current_phase: phase, id: id} = state) do
-    %{duration_hours: hours, duration_minutes: minutes, duration_seconds: seconds} = phase
-    phase = %{phase | calc_remaining_seconds: Timer.calc_seconds(hours, minutes, seconds)}
-    state = %{state | status: :stopped, current_phase: phase}
-    key = "scenario:" <> id
-    IO.puts("Server: Stop")
-    PubSub.broadcast(EasyTimer.PubSub, key, {"stop", phase})
+  def handle_cast(:previous, %{previous_phases: []} = state) do
+    {:noreply, state}
+  end
+
+  def handle_cast(:previous, %{previous_phases: [ previous | previous_rest], current_phase: current, next_phases: next,  id: id} = state) do
+    %{current_phase: current} = state = reset_phase(current, state)
+    state = %{state | previous_phases: previous_rest, current_phase: previous, next_phases: [current | next]}
+    IO.puts("Server: Stop, Reset, and Go to Previous Phase")
+    broadcast(id, {"reset", previous})
+    {:noreply, state}
+  end
+
+  def handle_cast(:stop, %{current_phase: current, id: id} = state) do
+    %{current_phase: current} = state = reset_phase(current, state)
+    IO.puts("Server: Stop and Reset")
+    broadcast(id, {"reset", current})
     {:noreply, state}
   end
   
   def handle_info(:tick, %{current_phase: phase, id: id} = state) do
-    # Check if state's current phase has run out of time
-    # Otherwise,decrement remainder
     key = "scenario:" <> id
 
     phase =
@@ -150,7 +156,16 @@ defmodule EasyTimer.ScenarioServer do
 
   defp timeout do
     IO.puts("Server: Phase complete, moving on...")
-    # Move current to end of queue. Load new phase from queue into current phase.
     next(self())
   end
+
+  defp reset_phase(%Phase{duration_hours: hours, duration_minutes: minutes, duration_seconds: seconds} = phase, state) do
+    phase = %{phase | calc_remaining_seconds: Timer.calc_seconds(hours, minutes, seconds)}
+    %{state | status: :stopped, current_phase: phase}
+  end
+
+  defp broadcast(id, message) do
+    PubSub.broadcast(EasyTimer.PubSub, "scenario:#{id}", message)
+  end
+
 end

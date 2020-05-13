@@ -1,9 +1,9 @@
 <div class="mx-auto p-4 xs:pt-16 border-blue-500 border-4">
   <h1 class="mx-auto py-12 text-6xl text-center">
     <%= case @status do %>
-      <%= :loading -> %>
-      <%= :loaded -> %><%= @seconds  %>
-      <%= :error -> %>Timer not found or no longer alive
+      <% :loading -> %>
+      <% :loaded -> %><%= @seconds  %>
+      <% :error -> %>Timer not found or no longer alive
     <% end %>
   </h1>
   <%= if @status === :loaded and @admin do %>

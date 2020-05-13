@@ -59,7 +59,7 @@ defmodule EasyTimer do
   defp setup_timer([first | rest] = phases) do
     scenario = %Scenario{
       current_phase: first,
-      phase_queue: rest,
+      next_phases: rest,
       rounds: length(phases),
       id: "#{gen_scenario_id()}",
       admin_pin: "#{gen_admin_pin()}"

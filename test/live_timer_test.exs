@@ -28,6 +28,6 @@ defmodule EasyTimerTest do
     assert %Scenario{current_phase: %{calc_remaining_seconds: duration}} = ScenarioServer.get(pid)
     ScenarioServer.start(pid)
     :timer.sleep(2500)
-    assert %Scenario{status: :stopped, phase_queue: []} = ScenarioServer.get(pid)
+    assert %Scenario{status: :stopped, next_phases: []} = ScenarioServer.get(pid)
   end
 end
