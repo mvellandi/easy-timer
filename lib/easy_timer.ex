@@ -72,40 +72,46 @@ defmodule EasyTimer do
 
   def start(scenario) do
     IO.puts("API: starting scenario server PID:")
+    IO.inspect(scenario)
     EasyTimer.ScenarioServer.start(scenario)
   end
-
+  
   def stop(scenario) do
     IO.puts("API: Stopping scenario server PID:")
+    IO.inspect(scenario)
     EasyTimer.ScenarioServer.stop(scenario)
   end
-
+  
   def pause(scenario) do
     IO.puts("API: Pausing scenario server PID:")
+    IO.inspect(scenario)
     EasyTimer.ScenarioServer.pause(scenario)
   end
-
+  
   def previous(scenario) do
     IO.puts("API: Attempting to go to previous phase on scenario server PID:")
+    IO.inspect(scenario)
     EasyTimer.ScenarioServer.previous(scenario)
   end
-
+  
   def next(scenario) do
     IO.puts("API: Attempting to go to next phase on scenario server PID:")
+    IO.inspect(scenario)
     EasyTimer.ScenarioServer.next(scenario)
   end
-
+  
   def get_scenario(scenario_id) do
     IO.puts("API: Getting scenario server PID for ID:#{scenario_id}")
-
+    
     case Registry.lookup(EasyTimer.ScenarioServer, scenario_id) do
       [{pid, _} | _] -> pid
       [] -> {:error, "Scenario not found or no longer alive"}
     end
   end
-
+  
   def get_scenario_data(scenario) do
     IO.puts("API: Getting scenario data for server PID:")
+    IO.inspect(scenario)
     EasyTimer.ScenarioServer.get(scenario)
   end
 
