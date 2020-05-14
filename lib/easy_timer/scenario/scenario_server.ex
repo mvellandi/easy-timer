@@ -63,13 +63,14 @@ defmodule EasyTimer.ScenarioServer do
     {:reply, scenario.admin_pin === pin, scenario}
   end
 
-  def handle_call(:start, _from, %{status: status} = scenario) do
+  def handle_call(:start, _from, %{status: status, current_phase: current} = scenario) do
     scenario =
       case status do
         :started ->
           scenario
 
         _ ->
+          IO.puts("Server: Counting down from #{current.calc_remaining_seconds}")
           continue_timer()
           %{scenario | status: :started}
       end
@@ -86,14 +87,16 @@ defmodule EasyTimer.ScenarioServer do
   def handle_cast(:next, %Scenario{next_phases: []} = scenario), do: {:noreply, scenario}
 
   def handle_cast(action, %Scenario{} = scenario) when action in [:next, :previous] do
-    IO.puts("Server: stop and reset")
+    IO.puts("Server: stopping timer")
+    IO.puts("Server: resetting timer")
     scenario = reset_phase(scenario) |> change_phase(action)
     broadcast(scenario.id, {"reset", scenario.current_phase})
     {:noreply, scenario}
   end
-
+  
   def handle_cast(:stop, %Scenario{} = scenario) do
-    IO.puts("Server: stop and reset")
+    IO.puts("Server: stopping timer")
+    IO.puts("Server: resetting timer")
     scenario = reset_phase(scenario)
     broadcast(scenario.id, {"reset", scenario.current_phase})
     {:noreply, scenario}
@@ -109,10 +112,10 @@ defmodule EasyTimer.ScenarioServer do
 
         case remaining do
           0 ->
-            timeout()
+            timeout(scenario)
 
           _ ->
-            IO.puts("Server: Tick")
+            IO.puts("Server: tick -- #{updated_phase.calc_remaining_seconds}")
             broadcast(scenario.id, {"tick", updated_phase})
         end
 
@@ -163,8 +166,14 @@ defmodule EasyTimer.ScenarioServer do
     %{scenario | status: :stopped, current_phase: phase}
   end
 
-  defp timeout do
-    IO.puts("Server: phase complete, moving on...")
-    next(self())
+  defp timeout(%Scenario{auto_advance: flag}) do
+    case flag do
+      true ->
+        IO.puts("Server: phase complete")
+        next(self())
+      false ->
+        IO.puts("Server: phase complete")
+        stop(self())
+      end
   end
 end

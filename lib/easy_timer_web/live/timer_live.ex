@@ -88,12 +88,14 @@ defmodule EasyTimerWeb.TimerLive do
   end
 
   def handle_info({"tick", phase}, socket) do
-    IO.puts("Client: Tick")
-    {:noreply, assign(socket, :seconds, phase.calc_remaining_seconds)}
+    remaining = phase.calc_remaining_seconds
+    IO.puts("Client: tick -- #{remaining}")
+    {:noreply, assign(socket, :seconds, remaining)}
   end
-
+  
   def handle_info({"reset", phase}, socket) do
-    IO.puts("Client: Stop, Reset, and Update Phase")
-    {:noreply, assign(socket, :seconds, phase.calc_remaining_seconds)}
+    reset_value = phase.calc_remaining_seconds
+    IO.puts("Client: stop and reset timer to #{reset_value} seconds")
+    {:noreply, assign(socket, :seconds, reset_value)}
   end
 end
