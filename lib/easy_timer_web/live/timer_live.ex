@@ -95,7 +95,7 @@ defmodule EasyTimerWeb.TimerLive do
   
   def handle_info({"reset", phase}, socket) do
     reset_value = phase.calc_remaining_seconds
-    IO.puts("Client: stop and reset timer to #{reset_value} seconds")
+    IO.puts("Client: reset timer to #{reset_value} seconds")
     {:noreply, assign(socket, :seconds, reset_value)}
   end
 end
