@@ -63,13 +63,18 @@ defmodule EasyTimer.ScenarioServer do
     {:reply, scenario.admin_pin === pin, scenario}
   end
 
+  def handle_cast(:next, %Scenario{next_phases: []} = scenario) do
+    IO.puts("Server: scenario complete")
+    scenario = if scenario.auto_reset, do: reset_phase(scenario), else: scenario
+    {:noreply, scenario}
+  end
+
   def handle_cast(:pause, %Scenario{status: :started} = scenario) do
     {:noreply, %{scenario | status: :paused}}
   end
 
   def handle_cast(:pause, scenario), do: {:noreply, scenario}
 
-  def handle_cast(:next, %Scenario{next_phases: []} = scenario), do: {:noreply, scenario}
   def handle_cast(:previous, %Scenario{previous_phases: []} = scenario), do: {:noreply, scenario}
 
   def handle_cast(action, %Scenario{status: status} = scenario)
@@ -83,8 +88,16 @@ defmodule EasyTimer.ScenarioServer do
       end
 
     IO.puts("Server: resetting timer")
-    scenario = reset_phase(scenario) |> change_phase(action)
-    broadcast(scenario.id, {"reset", scenario.current_phase})
+    IO.puts("Server: going to #{Atom.to_string(action)} phase")
+
+    %{current_phase: cp, current_round: cr} =
+      scenario = reset_phase(scenario) |> change_phase(action)
+
+    broadcast(
+      scenario.id,
+      {"change_phase", {cr, cp.calc_remaining_seconds, cp.name}}
+    )
+
     {:noreply, scenario}
   end
 
@@ -104,72 +117,103 @@ defmodule EasyTimer.ScenarioServer do
   end
 
   def handle_cast(:stop, %Scenario{status: status} = scenario)
-      when status in [:created, :stopped],
-      do: {:noreply, scenario}
+      when status in [:created, :stopped] do
+    {:noreply, scenario}
+  end
 
-  def handle_cast(:stop, %Scenario{} = scenario) do
+  def handle_cast(:stop, %Scenario{next_phases: next_phases} = scenario) do
     IO.puts("Server: stopping timer")
 
-    case scenario.auto_reset do
-      true ->
-        IO.puts("Server: resetting timer")
-        scenario = reset_phase(scenario)
-        broadcast(scenario.id, {"reset", scenario.current_phase})
-        {:noreply, %{scenario | status: :stopped}}
+    scenario =
+      case scenario.auto_reset do
+        true ->
+          IO.puts("Server: resetting timer")
+          scenario = reset_phase(scenario)
+          broadcast(scenario.id, {"stop", scenario.current_phase.calc_remaining_seconds})
+          scenario
 
-      false ->
-        {:noreply, %{scenario | status: :stopped}}
-    end
-  end
-
-  def handle_info(:tick, %Scenario{current_phase: current_phase} = scenario) do
-    phase =
-      if scenario.status == :started do
-        {remaining, updated_phase} =
-          Map.get_and_update!(current_phase, :calc_remaining_seconds, fn seconds ->
-            updated = if seconds > 0, do: seconds - 1, else: 0
-            {seconds, updated}
-          end)
-
-        case remaining do
-          0 ->
-            timeout(scenario)
-
-          _ ->
-            IO.puts("Server: tick -- #{updated_phase.calc_remaining_seconds}")
-            broadcast(scenario.id, {"tick", updated_phase})
-        end
-
-        continue_timer()
-        updated_phase
-      else
-        current_phase
+        false ->
+          scenario
       end
 
-    {:noreply, %{scenario | current_phase: phase}}
+    if scenario.current_phase.calc_remaining_seconds === 0, do: IO.puts("Server: phase complete")
+    if next_phases === [], do: IO.puts("Server: scenario complete")
+
+    {:noreply, %{scenario | status: :stopped}}
   end
+
+  def handle_info(:tick, %Scenario{status: :started, current_phase: current_phase} = scenario) do
+    {remaining, updated_phase} =
+      Map.get_and_update!(current_phase, :calc_remaining_seconds, fn remaining ->
+        updated =
+          if remaining > 0 do
+            continue_timer()
+            remaining - 1
+          else
+            0
+          end
+
+        {remaining, updated}
+      end)
+
+    case remaining do
+      0 ->
+        timeout(scenario)
+
+      _ ->
+        IO.puts("Server: tick -- #{updated_phase.calc_remaining_seconds}")
+        broadcast(scenario.id, {"tick", updated_phase})
+    end
+
+    {:noreply, %{scenario | current_phase: updated_phase}}
+  end
+
+  # def handle_info(:tick, %Scenario{current_phase: current_phase} = scenario) do
+  #   {remaining, phase} =
+  #     if scenario.status == :started do
+  #       continue_timer()
+
+  #       Map.get_and_update!(current_phase, :calc_remaining_seconds, fn seconds ->
+  #         updated = if seconds > 0, do: seconds - 1, else: 0
+  #         {seconds, updated}
+  #       end)
+  #     else
+  #       {nil, current_phase}
+  #     end
+
+  #   case remaining do
+  #     0 ->
+  #       timeout(scenario)
+
+  #     _ ->
+  #       IO.puts("Server: tick -- #{phase.calc_remaining_seconds}")
+  #       broadcast(scenario.id, {"tick", phase})
+  #   end
+
+  #   {:noreply, %{scenario | current_phase: phase}}
+  # end
 
   defp broadcast(id, message) do
     PubSub.broadcast(EasyTimer.PubSub, "scenario:#{id}", message)
   end
 
   defp change_phase(
-         %Scenario{previous_phases: pp, current_phase: c, next_phases: np} = scenario,
+         %Scenario{previous_phases: pp, current_phase: cp, next_phases: np, current_round: round} =
+           scenario,
          direction
        ) do
-    IO.puts("Server: going to #{Atom.to_string(direction)} phase")
-
-    {pp, cp, np} =
+    {pp, cp, np, round} =
       case direction do
-        :previous -> {tl(pp), hd(pp), [c | np]}
-        :next -> {[c | pp], hd(np), tl(np)}
+        :previous -> {tl(pp), hd(pp), [cp | np], round - 1}
+        :next -> {[cp | pp], hd(np), tl(np), round + 1}
       end
 
     %Scenario{
       scenario
       | previous_phases: pp,
         current_phase: cp,
-        next_phases: np
+        next_phases: np,
+        current_round: round
     }
   end
 
@@ -187,14 +231,14 @@ defmodule EasyTimer.ScenarioServer do
     %{scenario | current_phase: phase}
   end
 
-  defp timeout(%Scenario{auto_advance: flag}) do
-    case flag do
+  defp timeout(%Scenario{auto_advance: advance}) do
+    IO.puts("Server: phase complete")
+
+    case advance do
       true ->
-        IO.puts("Server: phase complete")
         next(self())
 
       false ->
-        IO.puts("Server: phase complete")
         stop(self())
     end
   end
