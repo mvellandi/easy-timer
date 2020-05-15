@@ -10,10 +10,12 @@ defmodule EasyTimer.ScenarioServer do
   #
   # ADMIN API
   #
-  def start_link(%Scenario{} = state) do
-    GenServer.start_link(__MODULE__, state)
+  @doc "Start new ScenarioServer with provided scenario struct"
+  def start_link(%Scenario{} = scenario) do
+    GenServer.start_link(__MODULE__, scenario)
   end
 
+  @doc "Return true/false if a provided pin matches the scenario's admin_pin"
   def authorize_admin(server, pin) do
     GenServer.call(server, {:auth, pin})
   end
@@ -21,27 +23,41 @@ defmodule EasyTimer.ScenarioServer do
   #
   # API
   #
-
+  @doc "Retrieve the current scenario data"
   def get(server) do
     GenServer.call(server, :get)
   end
 
+  @doc """
+  Start counting down on the current phase
+  """
   def start(server) do
     GenServer.cast(server, :start)
   end
-
+  
+  @doc "Pause counting down on the current phase"
   def pause(server) do
     GenServer.cast(server, :pause)
   end
 
+  @doc """
+  Stop the timer.
+  
+  If the auto_reset flag is set on the scenario, then the current phase is reset on server and client.
+  Logs "phase complete" if remaining seconds is 0.
+  Logs "scenario complete" if remaining seconds is 0 and there are no more phases.
+  Adds :stopped status to scenario, which disables additional 
+  """
   def stop(server) do
     GenServer.cast(server, :stop)
   end
 
+  @doc "Go to previous phase"
   def previous(server) do
     GenServer.cast(server, :previous)
   end
-
+  
+  @doc "Advance to next phase"
   def next(server) do
     GenServer.cast(server, :next)
   end
@@ -50,6 +66,7 @@ defmodule EasyTimer.ScenarioServer do
   # SERVER
   #
 
+  @doc "Register the ScenarioServer using the scenario's id and the server PID"
   def init(scenario) do
     Registry.register(EasyTimer.ScenarioServer, scenario.id, self())
     {:ok, scenario}
@@ -70,6 +87,7 @@ defmodule EasyTimer.ScenarioServer do
   end
 
   def handle_cast(:pause, %Scenario{status: :started} = scenario) do
+    IO.puts("Server: pausing timer")
     {:noreply, %{scenario | status: :paused}}
   end
 
@@ -136,8 +154,10 @@ defmodule EasyTimer.ScenarioServer do
           scenario
       end
 
-    if scenario.current_phase.calc_remaining_seconds === 0, do: IO.puts("Server: phase complete")
-    if next_phases === [], do: IO.puts("Server: scenario complete")
+    if scenario.current_phase.calc_remaining_seconds === 0 do
+      IO.puts("Server: phase complete")
+      if next_phases === [], do: IO.puts("Server: scenario complete")
+    end
 
     {:noreply, %{scenario | status: :stopped}}
   end
@@ -167,31 +187,7 @@ defmodule EasyTimer.ScenarioServer do
 
     {:noreply, %{scenario | current_phase: updated_phase}}
   end
-
-  # def handle_info(:tick, %Scenario{current_phase: current_phase} = scenario) do
-  #   {remaining, phase} =
-  #     if scenario.status == :started do
-  #       continue_timer()
-
-  #       Map.get_and_update!(current_phase, :calc_remaining_seconds, fn seconds ->
-  #         updated = if seconds > 0, do: seconds - 1, else: 0
-  #         {seconds, updated}
-  #       end)
-  #     else
-  #       {nil, current_phase}
-  #     end
-
-  #   case remaining do
-  #     0 ->
-  #       timeout(scenario)
-
-  #     _ ->
-  #       IO.puts("Server: tick -- #{phase.calc_remaining_seconds}")
-  #       broadcast(scenario.id, {"tick", phase})
-  #   end
-
-  #   {:noreply, %{scenario | current_phase: phase}}
-  # end
+  def handle_info(:tick, %Scenario{} = scenario), do: {:noreply, scenario}
 
   defp broadcast(id, message) do
     PubSub.broadcast(EasyTimer.PubSub, "scenario:#{id}", message)

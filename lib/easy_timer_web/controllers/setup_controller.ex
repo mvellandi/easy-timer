@@ -23,6 +23,7 @@ defmodule EasyTimerWeb.SetupController do
          }) do
       %{scenario_id: scenario_id, admin_pin: admin_pin} ->
         host = "http://localhost:4000/live/"
+        # conn = Plug.Conn.put_resp_cookie(conn, "easytimer", %{admin: true}, sign: true)
 
         render(conn, "success.html",
           page_title: "Quick Timer",
@@ -40,6 +41,7 @@ defmodule EasyTimerWeb.SetupController do
     case EasyTimer.create(:custom, %{file: file.path}) do
       %{scenario_id: scenario_id, admin_pin: admin_pin} ->
         host = "http://localhost:4000/live/"
+        # conn = Plug.Conn.put_resp_cookie(conn, "easytimer", %{admin: true}, sign: true)
 
         render(conn, "success.html",
           page_title: "Custom Timer",
