@@ -2,7 +2,7 @@ defmodule EasyTimerWeb.TimerLive do
   use Phoenix.LiveView
   alias Phoenix.PubSub
 
-  def mount(%{"scenario_id" => scenario_id} = _params, _session, socket) do
+  def mount(_params, %{"scenario_id" => scenario_id, "admin" => admin}, socket) do
     IO.puts("Client: mounted")
 
     server =
@@ -61,7 +61,7 @@ defmodule EasyTimerWeb.TimerLive do
      assign(socket,
        status: status,
        server: server,
-       admin: true,
+       admin: admin,
        scenario_type: scenario_type,
        seconds: seconds,
        current_round: current_round,

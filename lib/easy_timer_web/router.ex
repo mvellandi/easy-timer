@@ -1,6 +1,6 @@
 defmodule EasyTimerWeb.Router do
   use EasyTimerWeb, :router
-  import Phoenix.LiveView.Router
+  # import Phoenix.LiveView.Router
 
   pipeline :browser do
     plug :accepts, ["html", "text"]
@@ -22,7 +22,7 @@ defmodule EasyTimerWeb.Router do
     # live "/quick", Setup
     # live "/custom", Setup
     # live "/pagelive", PageLive, :index
-    live "/live/:scenario_id", TimerLive
+    get "/live/:scenario_id", TimerController, :show
 
     get "/", SetupController, :index
     get "/quick", SetupController, :quick
