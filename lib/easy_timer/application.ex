@@ -6,7 +6,7 @@ defmodule EasyTimer.Application do
       {Registry, keys: :unique, name: EasyTimer.ScenarioServer},
       {Phoenix.PubSub, [name: EasyTimer.PubSub]},
       EasyTimer.ScenarioSupervisor,
-      EasyTimerWeb.Endpoint
+      Web.Endpoint
     ]
 
     opts = [strategy: :one_for_one, name: EasyTimer.Supervisor]
@@ -14,7 +14,7 @@ defmodule EasyTimer.Application do
   end
 
   def config_change(changed, _new, removed) do
-    EasyTimerWeb.Endpoint.config_change(changed, removed)
+    Web.Endpoint.config_change(changed, removed)
     :ok
   end
 end

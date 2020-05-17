@@ -1,12 +1,12 @@
-defmodule EasyTimerWeb do
+defmodule Web do
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, views, channels and so on.
 
   This can be used in your application as:
 
-      use EasyTimerWeb, :controller
-      use EasyTimerWeb, :view
+      use Web, :controller
+      use Web, :view
 
   The definitions below will be executed for every view,
   controller, etc, so keep them short and clean, focused
@@ -19,11 +19,11 @@ defmodule EasyTimerWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: EasyTimerWeb
+      use Phoenix.Controller, namespace: Web
 
       import Plug.Conn
-      import EasyTimerWeb.Gettext
-      alias EasyTimerWeb.Router.Helpers, as: Routes
+      import Web.Gettext
+      alias Web.Router.Helpers, as: Routes
       import Phoenix.LiveView.Controller
     end
   end
@@ -32,7 +32,7 @@ defmodule EasyTimerWeb do
     quote do
       use Phoenix.View,
         root: "lib/easy_timer_web/templates",
-        namespace: EasyTimerWeb
+        namespace: Web
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 1, get_flash: 2, view_module: 1]
@@ -45,7 +45,7 @@ defmodule EasyTimerWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {EasyTimerWeb.LayoutView, "live.html"}
+        layout: {Web.LayoutView, "live.html"}
 
       unquote(view_helpers())
     end
@@ -72,7 +72,7 @@ defmodule EasyTimerWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import EasyTimerWeb.Gettext
+      import Web.Gettext
     end
   end
 
@@ -87,9 +87,9 @@ defmodule EasyTimerWeb do
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
 
-      import EasyTimerWeb.ErrorHelpers
-      import EasyTimerWeb.Gettext
-      alias EasyTimerWeb.Router.Helpers, as: Routes
+      import Web.ErrorHelpers
+      import Web.Gettext
+      alias Web.Router.Helpers, as: Routes
     end
   end
 

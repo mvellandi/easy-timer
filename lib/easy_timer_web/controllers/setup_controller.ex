@@ -1,5 +1,5 @@
-defmodule EasyTimerWeb.SetupController do
-  use EasyTimerWeb, :controller
+defmodule Web.SetupController do
+  use Web, :controller
 
   def index(conn, _params) do
     render(conn, "index.html")

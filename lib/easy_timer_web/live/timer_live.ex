@@ -1,4 +1,4 @@
-defmodule EasyTimerWeb.TimerLive do
+defmodule Web.TimerLive do
   use Phoenix.LiveView
   alias Phoenix.PubSub
   # TODO: Rename below module

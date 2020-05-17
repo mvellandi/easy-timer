@@ -1,12 +1,12 @@
-defmodule EasyTimerWeb.Router do
-  use EasyTimerWeb, :router
+defmodule Web.Router do
+  use Web, :router
   # import Phoenix.LiveView.Router
 
   pipeline :browser do
     plug :accepts, ["html", "text"]
     plug :fetch_session
     plug :fetch_live_flash
-    plug :put_root_layout, {EasyTimerWeb.LayoutView, :root}
+    plug :put_root_layout, {Web.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
   end
@@ -15,7 +15,7 @@ defmodule EasyTimerWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", EasyTimerWeb do
+  scope "/", Web do
     pipe_through :browser
 
     # live "/", Setup
@@ -33,7 +33,7 @@ defmodule EasyTimerWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", EasyTimerWeb do
+  # scope "/api", Web do
   #   pipe_through :api
   # end
 
@@ -49,7 +49,7 @@ defmodule EasyTimerWeb.Router do
 
     scope "/" do
       pipe_through :browser
-      live_dashboard "/dashboard", metrics: EasyTimerWeb.Telemetry
+      live_dashboard "/dashboard", metrics: Web.Telemetry
     end
   end
 end

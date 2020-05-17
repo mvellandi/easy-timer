@@ -1,6 +1,6 @@
-defmodule EasyTimerWeb.TimerController do
-  use EasyTimerWeb, :controller
-  alias EasyTimerWeb.TimerLive
+defmodule Web.TimerController do
+  use Web, :controller
+  alias Web.TimerLive
   import Plug.Conn
   import Phoenix.LiveView.Controller
 

@@ -1,5 +1,5 @@
-defmodule EasyTimerWeb.SetupControllerTest do
-  use EasyTimerWeb.ConnCase
+defmodule Web.SetupControllerTest do
+  use Web.ConnCase
 
   test "GET /", %{conn: conn} do
     conn = get(conn, "/")

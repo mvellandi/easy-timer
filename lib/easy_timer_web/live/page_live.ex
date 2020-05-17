@@ -1,5 +1,5 @@
-defmodule EasyTimerWeb.PageLive do
-  use EasyTimerWeb, :live_view
+defmodule Web.PageLive do
+  use Web, :live_view
 
   @impl true
   def mount(_params, _session, socket) do
@@ -26,7 +26,7 @@ defmodule EasyTimerWeb.PageLive do
   end
 
   defp search(query) do
-    if not EasyTimerWeb.Endpoint.config(:code_reloader) do
+    if not Web.Endpoint.config(:code_reloader) do
       raise "action disabled when not in development"
     end
 

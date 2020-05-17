@@ -8,10 +8,10 @@
 use Mix.Config
 
 # Configures the endpoint
-config :easy_timer, EasyTimerWeb.Endpoint,
+config :easy_timer, Web.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "umRpCPYNWA6d0def94Ddm1svc8G8tDGoVd8pMvX5iGixP2bdN8qTpFIc9hQzxzyk",
-  render_errors: [view: EasyTimerWeb.ErrorView, accepts: ~w(html json)],
+  render_errors: [view: Web.ErrorView, accepts: ~w(html json)],
   pubsub_server: EasyTimer.PubSub,
   live_view: [signing_salt: "dmK9bL+us/6csweJlmT/OpzNGpRJ2GuH"]
 

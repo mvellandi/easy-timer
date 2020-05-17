@@ -1,3 +1,3 @@
-defmodule EasyTimerWeb.SetupView do
-  use EasyTimerWeb, :view
+defmodule Web.SetupView do
+  use Web, :view
 end

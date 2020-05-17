@@ -1,6 +1,6 @@
-# defmodule EasyTimerWeb.Setup do
+# defmodule Web.Setup do
 #   use Phoenix.LiveView
-#   alias EasyTimerWeb.Setup
+#   alias Web.Setup
 
 #   @defaults %{timer_type: nil}
 

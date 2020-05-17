@@ -1,4 +1,4 @@
-defmodule EasyTimerWeb.Endpoint do
+defmodule Web.Endpoint do
   use Phoenix.Endpoint, otp_app: :easy_timer
 
   # The session will be stored in the cookie and signed,
@@ -10,7 +10,7 @@ defmodule EasyTimerWeb.Endpoint do
     signing_salt: "v5IpCs00"
   ]
 
-  socket "/socket", EasyTimerWeb.UserSocket,
+  socket "/socket", Web.UserSocket,
     websocket: true,
     longpoll: false
 
@@ -49,5 +49,5 @@ defmodule EasyTimerWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
-  plug EasyTimerWeb.Router
+  plug Web.Router
 end

@@ -1,6 +1,6 @@
-# defmodule EasyTimerWeb.Setup.Quick do
+# defmodule Web.Setup.Quick do
 #   use Phoenix.LiveComponent
-#   alias EasyTimerWeb.SetupView
+#   alias Web.SetupView
 #   alias Phoenix.View
 
 #   def render(assigns) do
