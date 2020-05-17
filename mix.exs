@@ -46,7 +46,8 @@ defmodule EasyTimer.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:csv, "~> 2.3"},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
-      {:plug, "~> 1.10"}
+      {:plug, "~> 1.10"},
+      {:timex, "~> 3.6"}
     ]
   end
 

@@ -23,4 +23,41 @@ defmodule EasyTimer.Timer do
   def send_after_second(pid, message, opts \\ []) do
     Process.send_after(pid, message, length_of_second(), opts)
   end
+
+  def seconds_to_clock(seconds, delimeter) do
+    {h, m, s, _ms} =
+      seconds
+      |> Timex.Duration.from_seconds()
+      |> Timex.Duration.to_clock()
+
+    time =
+      %{hours: h, minutes: m, seconds: s}
+      |> Enum.map(fn {k, v} ->
+        case k do
+          :hours ->
+            cond do
+              v == 0 -> {k, ""}
+              v < 10 -> {k, "0#{v}#{delimeter}"}
+              true -> {k, v}
+            end
+
+          :minutes ->
+            cond do
+              v == 0 -> {k, "00#{delimeter}"}
+              v < 10 -> {k, "0#{v}#{delimeter}"}
+              true -> {k, v}
+            end
+
+          :seconds ->
+            cond do
+              v == 0 -> {k, "00"}
+              v < 10 -> {k, "0#{v}"}
+              true -> {k, v}
+            end
+        end
+      end)
+      |> Enum.into(%{})
+
+    time
+  end
 end

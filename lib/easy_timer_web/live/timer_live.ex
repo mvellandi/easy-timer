@@ -1,6 +1,8 @@
 defmodule EasyTimerWeb.TimerLive do
   use Phoenix.LiveView
   alias Phoenix.PubSub
+  # TODO: Rename below module
+  alias EasyTimer.Timer
 
   def mount(_params, %{"scenario_id" => scenario_id, "admin" => admin}, socket) do
     IO.puts("Client: mounted")
@@ -38,11 +40,14 @@ defmodule EasyTimerWeb.TimerLive do
         _ -> :error
       end
 
-    {scenario_type, seconds, current_round, total_rounds, phase_name} =
+    {scenario_type, time, current_round, total_rounds, phase_name} =
       case status do
         :loaded ->
           type = if length(scenario.next_phases) == 0, do: :quick, else: :custom
-          seconds = scenario.current_phase.calc_remaining_seconds
+
+          time =
+            scenario.current_phase.calc_remaining_seconds
+            |> Timer.seconds_to_clock(":")
 
           {cr, tr, name} =
             if type === :custom do
@@ -50,11 +55,12 @@ defmodule EasyTimerWeb.TimerLive do
             else
               {nil, nil, nil}
             end
-
-          {type, seconds, cr, tr, name}
+          
+          IO.puts("Client: ready to go!\n")
+          {type, time, cr, tr, name}
 
         _ ->
-          {nil, nil, nil, nil, nil}
+          {nil, %{seconds: nil}, nil, nil, nil}
       end
 
     {:ok,
@@ -63,7 +69,7 @@ defmodule EasyTimerWeb.TimerLive do
        server: server,
        admin: admin,
        scenario_type: scenario_type,
-       seconds: seconds,
+       time: time,
        current_round: current_round,
        total_rounds: total_rounds,
        phase_name: phase_name
@@ -99,29 +105,27 @@ defmodule EasyTimerWeb.TimerLive do
   end
 
   def handle_info({"change_phase", {current_round, remaining_seconds, phase_name}}, socket) do
-    # reset_value = phase.calc_remaining_seconds
-    # IO.puts("Client: reset timer to #{reset_value} seconds")
     IO.puts("Client: changing phase to round: #{current_round}")
-    IO.puts("Client: setting timer to #{remaining_seconds} seconds")
+    time = remaining_seconds |> Timer.seconds_to_clock(":")
+    IO.puts("Client: setting timer to #{time.hours}#{time.minutes}#{time.seconds}\n")
 
     {:noreply,
      assign(socket,
-       seconds: remaining_seconds,
+       time: time,
        current_round: current_round,
        phase_name: phase_name
      )}
   end
 
   def handle_info({"stop", remaining_seconds}, socket) do
-    # reset_value = phase.calc_remaining_seconds
-    # IO.puts("Client: reset timer to #{reset_value} seconds")
-    IO.puts("Client: reset timer to #{remaining_seconds} seconds")
-    {:noreply, assign(socket, :seconds, remaining_seconds)}
+    time = remaining_seconds |> Timer.seconds_to_clock(":")
+    IO.puts("Client: reset timer to #{time.hours}#{time.minutes}#{time.seconds}\n")
+    {:noreply, assign(socket, :time, time)}
   end
 
-  def handle_info({"tick", phase}, socket) do
-    remaining = phase.calc_remaining_seconds
-    IO.puts("Client: tick -- #{remaining}")
-    {:noreply, assign(socket, :seconds, remaining)}
+  def handle_info({"tick", remaining_seconds}, socket) do
+    time = remaining_seconds |> Timer.seconds_to_clock(":")
+    IO.puts("Client: tick -- #{time.hours}#{time.minutes}#{time.seconds}\n")
+    {:noreply, assign(socket, :time, time)}
   end
 end

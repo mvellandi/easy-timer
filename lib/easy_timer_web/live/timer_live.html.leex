@@ -8,7 +8,11 @@
   <%= case @status do %>
     <% :loading -> %>
     <% :loaded -> %>
-      <h1 class="mx-auto py-8 text-9xl text-center"><%= @seconds  %></h1>
+      <h1 class="mx-auto py-8 text-9xl text-center">
+        <%= @time.hours %>
+        <%= @time.minutes %>
+        <%= @time.seconds %>
+      </h1>
     <% :error -> %>
       <h1 class="mx-auto py-8 text-6xl text-center">Timer not found or no longer alive</h1>
   <% end %>
