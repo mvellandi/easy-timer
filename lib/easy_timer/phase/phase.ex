@@ -1,5 +1,5 @@
 defmodule EasyTimer.Phase do
-  alias EasyTimer.{Phase, Timer}
+  alias EasyTimer.{Phase, TimeUtils}
 
   defstruct id: nil,
             name: nil,
@@ -113,7 +113,7 @@ defmodule EasyTimer.Phase do
 
   def validate_hours(%{errors: errors, data: data} = result, key) do
     with {:ok, hours} <- convert_value_to_integer(data[key]) do
-      if Timer.time_less_or_equal_24(hours) and Timer.time_greater_or_equal_0(hours) do
+      if TimeUtils.time_less_or_equal_24(hours) and TimeUtils.time_greater_or_equal_0(hours) do
         %{result | data: Map.put(data, key, hours)}
       else
         e =
@@ -142,7 +142,7 @@ defmodule EasyTimer.Phase do
 
   def validate_minutes_seconds(%{errors: errors, data: data} = result, key) do
     with {:ok, time} <- convert_value_to_integer(data[key]) do
-      if Timer.time_less_60(time) and Timer.time_greater_or_equal_0(time) do
+      if TimeUtils.time_less_60(time) and TimeUtils.time_greater_or_equal_0(time) do
         %{result | data: Map.put(data, key, time)}
       else
         e =
@@ -174,7 +174,7 @@ defmodule EasyTimer.Phase do
       [hours, mins, secs] = [data.duration_hours, data.duration_minutes, data.duration_seconds]
 
     if Enum.all?(time, &is_integer(&1)) do
-      phase_duration = Timer.calc_seconds(hours, mins, secs)
+      phase_duration = TimeUtils.calc_seconds(hours, mins, secs)
 
       if phase_duration <= @max_phase_length_seconds and
            phase_duration >= @min_phase_length_seconds do

@@ -1,8 +1,7 @@
 defmodule Web.TimerLive do
   use Phoenix.LiveView
   alias Phoenix.PubSub
-  # TODO: Rename below module
-  alias EasyTimer.Timer
+  alias EasyTimer.TimeUtils
 
   def mount(_params, %{"scenario_id" => scenario_id, "admin" => admin}, socket) do
     IO.puts("Client: mounted")
@@ -47,7 +46,7 @@ defmodule Web.TimerLive do
 
           time =
             scenario.current_phase.calc_remaining_seconds
-            |> Timer.seconds_to_clock(":")
+            |> TimeUtils.seconds_to_clock(":")
 
           {cr, tr, name} =
             if type === :custom do
@@ -106,7 +105,7 @@ defmodule Web.TimerLive do
 
   def handle_info({"change_phase", {current_round, remaining_seconds, phase_name}}, socket) do
     IO.puts("Client: changing phase to round: #{current_round}")
-    time = remaining_seconds |> Timer.seconds_to_clock(":")
+    time = remaining_seconds |> TimeUtils.seconds_to_clock(":")
     IO.puts("Client: setting timer to #{time.hours}#{time.minutes}#{time.seconds}\n")
 
     {:noreply,
@@ -118,13 +117,13 @@ defmodule Web.TimerLive do
   end
 
   def handle_info({"stop", remaining_seconds}, socket) do
-    time = remaining_seconds |> Timer.seconds_to_clock(":")
+    time = remaining_seconds |> TimeUtils.seconds_to_clock(":")
     IO.puts("Client: reset timer to #{time.hours}#{time.minutes}#{time.seconds}\n")
     {:noreply, assign(socket, :time, time)}
   end
 
   def handle_info({"tick", remaining_seconds}, socket) do
-    time = remaining_seconds |> Timer.seconds_to_clock(":")
+    time = remaining_seconds |> TimeUtils.seconds_to_clock(":")
     IO.puts("Client: tick -- #{time.hours}#{time.minutes}#{time.seconds}\n")
     {:noreply, assign(socket, :time, time)}
   end

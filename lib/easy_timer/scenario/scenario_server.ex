@@ -1,6 +1,6 @@
 defmodule EasyTimer.ScenarioServer do
   use GenServer
-  alias EasyTimer.{Scenario, Timer, Phase}
+  alias EasyTimer.{Scenario, Phase, TimeUtils}
   alias Phoenix.PubSub
 
   @moduledoc """
@@ -224,7 +224,7 @@ defmodule EasyTimer.ScenarioServer do
   end
 
   defp continue_timer() do
-    Timer.send_after_second(self(), :tick)
+    TimeUtils.send_after_second(self(), :tick)
   end
 
   defp reset_phase(
@@ -233,7 +233,7 @@ defmodule EasyTimer.ScenarioServer do
              %Phase{duration_hours: h, duration_minutes: m, duration_seconds: s} = phase
          } = scenario
        ) do
-    phase = %{phase | calc_remaining_seconds: Timer.calc_seconds(h, m, s)}
+    phase = %{phase | calc_remaining_seconds: TimeUtils.calc_seconds(h, m, s)}
     %{scenario | current_phase: phase}
   end
 

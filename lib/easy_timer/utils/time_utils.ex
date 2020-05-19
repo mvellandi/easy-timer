@@ -1,4 +1,4 @@
-defmodule EasyTimer.Timer do
+defmodule EasyTimer.TimeUtils do
   @moduledoc """
   Functions for managing time
   """
