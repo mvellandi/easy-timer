@@ -80,17 +80,19 @@ defmodule EasyTimer.ScenarioServer do
     {:reply, scenario.admin_pin === pin, scenario}
   end
 
+  # For explicit next call
+  def handle_cast(:next, %Scenario{next_phases: [], status: :stopped} = scenario), do: {:noreply, scenario}
+  # For implicit next call (timeout on the last phase), with auto advance
   def handle_cast(:next, %Scenario{next_phases: []} = scenario) do
     IO.puts("Server: scenario complete")
     scenario = if scenario.auto_reset, do: reset_phase(scenario), else: scenario
-    {:noreply, scenario}
+    {:noreply, %{scenario | status: :stopped}}
   end
 
   def handle_cast(:pause, %Scenario{status: :started} = scenario) do
     IO.puts("Server: pausing timer\n")
     {:noreply, %{scenario | status: :paused}}
   end
-
   def handle_cast(:pause, scenario), do: {:noreply, scenario}
 
   def handle_cast(:previous, %Scenario{previous_phases: []} = scenario), do: {:noreply, scenario}
