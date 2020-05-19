@@ -21,9 +21,12 @@ defmodule Web.SetupController do
          }) do
       %{scenario_id: scenario_id, admin_pin: admin_pin} ->
         host = "http://localhost:4000/live/"
-        conn = Plug.Conn.put_resp_cookie(conn, "easytimer-#{scenario_id}", %{admin: true}, sign: true)
+        # conn = Plug.Conn.put_resp_cookie(conn, "easytimer-#{scenario_id}", %{admin: true}, sign: true)
 
-        render(conn, "success.html",
+        conn
+        |> Plug.Conn.put_session("easytimer-admin-#{scenario_id}", true)
+        |> Plug.Conn.configure_session(renew: true)
+        |> render("success.html",
           page_title: "Quick Timer",
           admin_pin: admin_pin,
           host: host,
