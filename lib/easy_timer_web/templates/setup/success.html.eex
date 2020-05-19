@@ -1,13 +1,13 @@
 <div class="mx-auto pt-2 dbb">
   <%= render("nav.html", conn: @conn, page_title: @page_title) %>
 
-    <div class="mx-auto flex flex-col justify-center my-14 w-7/12 sm:w-5/12 md:w-4/12 lg:w-3/12 dbr">
-      <p class="mb-2 text-5xl text-center dbb">Success!</p>
+    <div class="mx-auto flex flex-col justify-center my-6 w-8/12 sm:w-5/12 md:w-4/12 lg:w-3/12 dbr">
+      <p class="mb-2 text-4xl text-center dbb">Success!</p>
       <p class="text-lg text-center dbb">Your timer is live at:</p>
       <p class="text-lg text-center dbb"><%= @host %></p>
       <p class="my-2 text-4xl bg-pink-300 text-center dbb"><strong><%= @scenario_id %></strong></p>
       <p class="text-lg text-center dbb">your admin pin code is:</p>
-      <p class="mt-4 text-4xl text-center dbb"><strong><%= @admin_pin %></strong></p>
+      <p class="text-4xl text-center dbb"><strong><%= @admin_pin %></strong></p>
     </div>
 
     <div class="flex mx-auto w-4/5 sm:w-3/5 lg:w-2/5 xl:w-4/12 2xl:w-1/4 dbr">

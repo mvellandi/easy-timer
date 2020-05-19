@@ -20,7 +20,7 @@ defmodule Web.SetupController do
            duration_seconds: secs
          }) do
       %{scenario_id: scenario_id, admin_pin: admin_pin} ->
-        host = "http://localhost:4000/live/"
+        host = "/live/"
 
         conn
         |> Plug.Conn.put_session("easytimer-admin-#{scenario_id}", true)
@@ -40,7 +40,7 @@ defmodule Web.SetupController do
   def setup_custom(conn, %{"file" => file}) do
     case EasyTimer.create(:custom, %{file: file.path}) do
       %{scenario_id: scenario_id, admin_pin: admin_pin} ->
-        host = "http://localhost:4000/live/"
+        host = "live/"
 
         conn
         |> Plug.Conn.put_session("easytimer-admin-#{scenario_id}", true)
