@@ -54,7 +54,7 @@ defmodule Web.TimerLive do
             else
               {nil, nil, nil}
             end
-          
+
           IO.puts("Client: ready to go!\n")
           {type, time, cr, tr, name}
 
@@ -101,6 +101,16 @@ defmodule Web.TimerLive do
   def handle_event("next", _params, %{assigns: %{server: server}} = socket) do
     EasyTimer.next(server)
     {:noreply, socket}
+  end
+
+  def handle_event("check_admin", _params, %{assigns: %{status: status}} = socket) do
+    status =
+      case status do
+        :check_admin -> :loaded
+        _ -> :check_admin
+      end
+
+    {:noreply, assign(socket, status: status)}
   end
 
   def handle_info({"change_phase", {current_round, remaining_seconds, phase_name}}, socket) do
