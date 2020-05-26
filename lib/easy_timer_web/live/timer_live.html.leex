@@ -10,7 +10,7 @@
         </div>
       <% end %>
 
-      <%= if not @admin do %>
+      <%= if not @admin.verified do %>
         <button phx-click="check_admin" class="text-4xl dbr">⚙️</button>
       <% end %>
 
@@ -22,7 +22,7 @@
         </h1>
       </div>
 
-      <%= if @admin do %>
+      <%= if @admin.verified do %>
         <div class="flex space-x-2">
 
           <%= if @scenario_type === :custom do %>
@@ -42,14 +42,19 @@
 
     <% :check_admin -> %>
 
-      <div class="mx-auto flex mt-24 dbr" style="width: 20rem;">
-        <h1 class="mx-auto text-4xl text-center dbb">Enter your PIN</h1>
-        <button phx-click="check_admin" class="dbb">X</button>
+      <div class="mx-auto flex flex-col" style="width: 20rem;">
+        <div class="flex justify-center mt-24 dbr">
+          <h1 class="text-4xl text-center dbb">Enter your PIN</h1>
+          <button phx-click="check_admin" class="ml-8 text-2xl dbb">X</button>
+        </div>
+        <%= if @admin.verify_error do %>
+          <h2 class="text-red-500 text-2xl text-center dbb">Incorrect</h2>
+        <% end %>
+        <%= f = form_for @admin.verified, "#", [phx_submit: :verify_admin, class: "flex flex-col justify-center mt-8 mb-24 dbr"] %>
+          <%= number_input f, :pin, class: "text-7xl text-center", minlength: "4", maxlength: "4", required: "required" %>
+          <%= submit "Submit", class: "mt-8 btn-green-white text-2xl" %>
+        </form>
       </div>
-      <form class="mx-auto flex flex-col justify-center mt-8 mb-24 dbr" style="width: 20rem;">
-        <input type="number" class="text-7xl text-center dbb" minlength="4" maxlength="4" required>
-        <button type="submit" class="mt-8 btn-green-white text-2xl dbb">Enter</button>
-      </form>
 
     <% :error -> %>
       <h1 class="mx-auto my-24 text-6xl text-center">Timer not found or no longer alive</h1>

@@ -1,78 +1,11 @@
 defmodule Web.TimerLive do
   use Phoenix.LiveView
-  alias Phoenix.PubSub
+  use Phoenix.HTML
   alias EasyTimer.TimeUtils
+  import Web.TimerLiveMount
 
-  def mount(_params, %{"scenario_id" => scenario_id, "admin" => admin}, socket) do
-    IO.puts("Client: mounted")
-
-    server =
-      case EasyTimer.get_scenario(scenario_id) do
-        server when is_pid(server) ->
-          IO.puts("Client: scenario is alive :)")
-          IO.puts("Client: Received scenario server PID:")
-          IO.inspect(server)
-          server
-
-        {:error, _msg} ->
-          IO.puts("Client: scenario is dead :(")
-          nil
-      end
-
-    scenario =
-      if connected?(socket) do
-        IO.puts("Client: connected")
-        key = "scenario:" <> scenario_id
-        IO.puts("Client: subscribing to #{key}")
-        PubSub.subscribe(EasyTimer.PubSub, key)
-        IO.puts("Client: requesting scenario data")
-        scenario = EasyTimer.get_scenario_data(server)
-        IO.puts("Client: received scenario data")
-        scenario
-      else
-        nil
-      end
-
-    status =
-      case is_pid(server) do
-        true -> if is_map(scenario), do: :loaded, else: :loading
-        _ -> :error
-      end
-
-    {scenario_type, time, current_round, total_rounds, phase_name} =
-      case status do
-        :loaded ->
-          type = if length(scenario.next_phases) == 0, do: :quick, else: :custom
-
-          time =
-            scenario.current_phase.calc_remaining_seconds
-            |> TimeUtils.seconds_to_clock(":")
-
-          {cr, tr, name} =
-            if type === :custom do
-              {scenario.current_round, scenario.total_rounds, scenario.current_phase.name}
-            else
-              {nil, nil, nil}
-            end
-
-          IO.puts("Client: ready to go!\n")
-          {type, time, cr, tr, name}
-
-        _ ->
-          {nil, %{seconds: nil}, nil, nil, nil}
-      end
-
-    {:ok,
-     assign(socket,
-       status: status,
-       server: server,
-       admin: admin,
-       scenario_type: scenario_type,
-       time: time,
-       current_round: current_round,
-       total_rounds: total_rounds,
-       phase_name: phase_name
-     )}
+  def mount(_params, session, socket) do
+    {:ok, assign_defaults(session, socket)}
   end
 
   def handle_event("start", _params, %{assigns: %{server: server}} = socket) do
@@ -103,14 +36,24 @@ defmodule Web.TimerLive do
     {:noreply, socket}
   end
 
-  def handle_event("check_admin", _params, %{assigns: %{status: status}} = socket) do
+  def handle_event("check_admin", _params, %{assigns: %{admin: admin, status: status}} = socket) do
     status =
       case status do
         :check_admin -> :loaded
         _ -> :check_admin
       end
 
-    {:noreply, assign(socket, status: status)}
+    {:noreply, assign(socket, admin: %{admin | verify_error: false}, status: status)}
+  end
+
+  def handle_event("verify_admin", %{"false" => %{"pin" => pin}}, %{assigns: %{server: server}} = socket) do
+    if EasyTimer.authorize_admin(server, pin) do
+      IO.puts("Client: admin approved")
+      {:noreply, assign(socket, admin: %{verified: true, verify_error: false}, status: :loaded)}
+    else
+      IO.puts("Client: admin rejected")
+      {:noreply, assign(socket, admin: %{verified: false, verify_error: true})}
+    end
   end
 
   def handle_info({"change_phase", {current_round, remaining_seconds, phase_name}}, socket) do

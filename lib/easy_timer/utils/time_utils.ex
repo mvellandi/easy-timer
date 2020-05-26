@@ -38,14 +38,14 @@ defmodule EasyTimer.TimeUtils do
             cond do
               v == 0 -> {k, ""}
               v < 10 -> {k, "0#{v}#{delimeter}"}
-              true -> {k, v}
+              true -> {k, "#{v}#{delimeter}"}
             end
 
           :minutes ->
             cond do
               v == 0 -> {k, "00#{delimeter}"}
               v < 10 -> {k, "0#{v}#{delimeter}"}
-              true -> {k, v}
+              true -> {k, "#{v}#{delimeter}"}
             end
 
           :seconds ->

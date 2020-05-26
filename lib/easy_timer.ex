@@ -70,34 +70,9 @@ defmodule EasyTimer do
     scenario
   end
 
-  def start(scenario) do
-    IO.puts("API: attempting to start scenario server PID:")
-    IO.inspect(scenario)
-    EasyTimer.ScenarioServer.start(scenario)
-  end
-
-  def stop(scenario) do
-    IO.puts("API: attempting to stop scenario server PID:")
-    IO.inspect(scenario)
-    EasyTimer.ScenarioServer.stop(scenario)
-  end
-
-  def pause(scenario) do
-    IO.puts("API: attempting to pause scenario server PID:")
-    IO.inspect(scenario)
-    EasyTimer.ScenarioServer.pause(scenario)
-  end
-
-  def previous(scenario) do
-    IO.puts("API: attempting to go to previous phase on scenario server PID:")
-    IO.inspect(scenario)
-    EasyTimer.ScenarioServer.previous(scenario)
-  end
-
-  def next(scenario) do
-    IO.puts("API: attempting to go to next phase on scenario server PID:")
-    IO.inspect(scenario)
-    EasyTimer.ScenarioServer.next(scenario)
+  def authorize_admin(scenario, pin) do
+    IO.puts("API: attempting to authorize scenario admin")
+    EasyTimer.ScenarioServer.authorize_admin(scenario, pin)
   end
 
   def get_scenario(scenario_id) do
@@ -111,10 +86,43 @@ defmodule EasyTimer do
 
   def get_scenario_data(scenario) do
     IO.puts("API: attempting to get scenario data for server PID:")
-    IO.inspect(scenario)
+    # IO.inspect(scenario)
     EasyTimer.ScenarioServer.get(scenario)
   end
 
+  def next(scenario) do
+    IO.puts("API: attempting to go to next phase on scenario server PID:")
+    # IO.inspect(scenario)
+    EasyTimer.ScenarioServer.next(scenario)
+  end
+
+  def pause(scenario) do
+    IO.puts("API: attempting to pause scenario server PID:")
+    # IO.inspect(scenario)
+    EasyTimer.ScenarioServer.pause(scenario)
+  end
+
+  def previous(scenario) do
+    IO.puts("API: attempting to go to previous phase on scenario server PID:")
+    # IO.inspect(scenario)
+    EasyTimer.ScenarioServer.previous(scenario)
+  end
+
+  def start(scenario) do
+    IO.puts("API: attempting to start scenario server PID:")
+    # IO.inspect(scenario)
+    EasyTimer.ScenarioServer.start(scenario)
+  end
+
+  def stop(scenario) do
+    IO.puts("API: attempting to stop scenario server PID:")
+    # IO.inspect(scenario)
+    EasyTimer.ScenarioServer.stop(scenario)
+  end
+
+  #
+  # HELPERS
+  #
   defp gen_scenario_id do
     n = :rand.uniform(999_999)
     if n < 1000, do: gen_admin_pin(), else: n
