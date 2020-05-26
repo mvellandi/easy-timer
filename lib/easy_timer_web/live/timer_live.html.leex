@@ -11,7 +11,7 @@
       <% end %>
 
       <%= if not @admin.verified do %>
-        <button phx-click="check_admin" class="text-4xl dbr">⚙️</button>
+        <button phx-click="admin_login" class="text-4xl dbr">⚙️</button>
       <% end %>
 
       <div class="my-12">
@@ -40,17 +40,17 @@
         </div>
         <% end %>
 
-    <% :check_admin -> %>
+    <% :admin_login -> %>
 
       <div class="mx-auto flex flex-col" style="width: 20rem;">
         <div class="flex justify-center mt-24 dbr">
           <h1 class="text-4xl text-center dbb">Enter your PIN</h1>
-          <button phx-click="check_admin" class="ml-8 text-2xl dbb">X</button>
+          <button phx-click="admin_login" class="ml-8 text-2xl dbb">X</button>
         </div>
         <%= if @admin.verify_error do %>
           <h2 class="text-red-500 text-2xl text-center dbb">Incorrect</h2>
         <% end %>
-        <%= f = form_for @admin.verified, "#", [phx_submit: :verify_admin, class: "flex flex-col justify-center mt-8 mb-24 dbr"] %>
+        <%= f = form_for @admin.verified, "#", [phx_submit: :admin_auth, class: "flex flex-col justify-center mt-8 mb-24 dbr"] %>
           <%= number_input f, :pin, class: "text-7xl text-center", minlength: "4", maxlength: "4", required: "required" %>
           <%= submit "Submit", class: "mt-8 btn-green-white text-2xl" %>
         </form>

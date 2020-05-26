@@ -36,17 +36,21 @@ defmodule Web.TimerLive do
     {:noreply, socket}
   end
 
-  def handle_event("check_admin", _params, %{assigns: %{admin: admin, status: status}} = socket) do
+  def handle_event("admin_login", _params, %{assigns: %{admin: admin, status: status}} = socket) do
     status =
       case status do
-        :check_admin -> :loaded
-        _ -> :check_admin
+        :admin_login -> :loaded
+        _ -> :admin_login
       end
 
     {:noreply, assign(socket, admin: %{admin | verify_error: false}, status: status)}
   end
 
-  def handle_event("verify_admin", %{"false" => %{"pin" => pin}}, %{assigns: %{server: server}} = socket) do
+  def handle_event(
+        "admin_auth",
+        %{"false" => %{"pin" => pin}},
+        %{assigns: %{server: server}} = socket
+      ) do
     if EasyTimer.authorize_admin(server, pin) do
       IO.puts("Client: admin approved")
       {:noreply, assign(socket, admin: %{verified: true, verify_error: false}, status: :loaded)}
