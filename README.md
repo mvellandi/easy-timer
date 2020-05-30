@@ -38,4 +38,5 @@ With this web application, you can create live countdown timers to share with ot
 ## Dev Notes
 
 - Tailwind configured for Phoenix via [phoenix-config-for-tailwind](https://github.com/jfreeze/phoenix-config-for-tailwind)
-- UI debugging for visual styling is done via alternating nested "dbr" (debug border red) and "dbb" (debug border blue) classes, that can be activated/deactivated manually by commenting out the "@import './dev.css'" statement in: "assets/css/app.css"
+- UI debugging via alternating nested "db{r,b,g}" debug border red, blue, and grey classes
+- UI debugging is activated/deactivated manually by commenting out the "@import './dev.css'" statement in: "assets/css/app.css"

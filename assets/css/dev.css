@@ -1,7 +1,11 @@
 .dbb {
-  @apply border-blue-500 border-4;
+  @apply border-blue-500 border-3;
 }
 
 .dbr {
-  @apply border-red-500 border-4;
+  @apply border-red-500 border-3;
+}
+
+.dbg {
+  @apply border-grey-500 border-3;
 }
