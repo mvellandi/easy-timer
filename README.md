@@ -1,19 +1,24 @@
-# EasyTimer
+<h1 style="margin-bottom: 0;">EasyTimer</h1>
+<h2 style="margin-top: 0;">Shareable and Synchronized</h2>
+With this web application, you can create live countdown timers to share with others.
 
-To start your Phoenix server:
+#### Options
 
-  * Install dependencies with `mix deps.get`
-  * Install Node.js dependencies with `cd assets && npm install`
-  * Start Phoenix endpoint with `mix phx.server`
+- Hours, minutes, seconds (limit to 24 hours)
+- A public web link to share with anyone
+- Play, pause, stop, next, and previous controls (admins only)
+- Share admin control via a PIN code
+- **Quick**: single
+- **Custom**: multiple named timers in a series
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+#### Notes
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+- The application works, but the UI is unpolished.
+- Timers are live for 24 hours before deletion
+- Custom, multi-phase timers currently require setup by uploading a CSV file. Future versions may support web forms.
 
-## Learn more
+#### Stack
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+- Elixir Phoenix application without no database
+- RESTful homepage and setup pages
+- Dynamic client/server interaction via Phoenix LiveView
