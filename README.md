@@ -1,4 +1,7 @@
-<h1 style="margin-bottom: 0;">EasyTimer<br>Shareable and Synchronized</h1>
+# EasyTimer
+
+## Shareable and Synchronized
+
 With this web application, you can create live countdown timers to share with others.
 
 ## Options
