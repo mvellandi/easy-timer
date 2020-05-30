@@ -1,8 +1,8 @@
 <h1 style="margin-bottom: 0;">EasyTimer</h1>
-<h2 style="margin-top: 0;">Shareable and Synchronized</h2>
+<p style="font-size: 1.5em; margin-top: 0;">Shareable and Synchronized</p>
 With this web application, you can create live countdown timers to share with others.
 
-#### Options
+## Options
 
 - Hours, minutes, seconds (limit to 24 hours)
 - A public web link to share with anyone
@@ -11,13 +11,13 @@ With this web application, you can create live countdown timers to share with ot
 - **Quick**: single
 - **Custom**: multiple named timers in a series
 
-#### Notes
+## Notes
 
 - The application works, but the UI is unpolished.
 - Timers are live for 24 hours before deletion
 - Custom, multi-phase timers currently require setup by uploading a CSV file. Future versions may support web forms.
 
-#### Stack
+## Stack
 
 - Elixir Phoenix application without no database
 - RESTful homepage and setup pages
