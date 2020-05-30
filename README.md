@@ -1,5 +1,4 @@
-<h1 style="margin-bottom: 0;">EasyTimer</h1>
-<p style="font-size: 2em; margin-top: 0;">Shareable and Synchronized</p>
+<h1 style="margin-bottom: 0;">EasyTimer<br>Shareable and Synchronized</h1>
 With this web application, you can create live countdown timers to share with others.
 
 ## Options
