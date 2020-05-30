@@ -1,6 +1,9 @@
 /* Base plus custom basic */
 @import "./style.base.css";
 
+/* Development UI testing */
+@import "./dev.css";
+
 @import "tailwindcss/components";
 
 /* Custom components */

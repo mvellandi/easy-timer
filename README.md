@@ -13,7 +13,7 @@ With this web application, you can create live countdown timers to share with ot
 - **Quick**: single
 - **Custom**: multiple named timers in a series
 
-## Notes
+## App Notes
 
 - The application works, but the UI is unpolished.
 - Timers are live for 24 hours before deletion
@@ -24,3 +24,9 @@ With this web application, you can create live countdown timers to share with ot
 - Elixir Phoenix application without no database
 - RESTful homepage and setup pages
 - Dynamic client/server interaction via Phoenix LiveView
+- Tailwind CSS
+
+## Dev Notes
+
+- Tailwind configured for Phoenix via [phoenix-config-for-tailwind](https://github.com/jfreeze/phoenix-config-for-tailwind)
+- UI debugging for visual styling is done via alternating nested "dbr" (debug border red) and "dbb" (debug border blue) classes, that can be activated/deactivated manually by commenting out the "@import './dev.css'" statement in: "assets/css/app.css"
