@@ -3,11 +3,12 @@
   <%= form_for @conn, Routes.setup_path(@conn, :setup_custom), [multipart: true], fn f -> %>
 
     <div class="mx-auto my-14 w-7/12 sm:w-5/12 md:w-4/12 lg:w-3/12 dbr">
-      <p class="my-4 text-lg dbb">Please upload a CSV file.<br>Here's a template you can use.</p>
+      <p class="mt-4 text-xl dbb">Please upload a CSV file.</p>
+      <a href="/templates/custom_timer_template.csv" style="text-decoration: underline;" class="mb-4">Here's a template you can use.</a>
       <%= file_input f, :file, class: "my-8 dbb" %>
     </div>
     <div class="mx-auto flex justify-center dbr">
-      <%= submit "Upload", class: "btn-indigo-white w-40 dbb p-4" %>
+      <%= submit "Upload", class: "btn-lg btn-indigo-white w-40 dbb p-4" %>
     </div>
 
   <% end %>

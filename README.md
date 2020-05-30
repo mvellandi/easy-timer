@@ -19,11 +19,20 @@ With this web application, you can create live countdown timers to share with ot
 - Timers are live for 24 hours before deletion
 - Custom, multi-phase timers currently require setup by uploading a CSV file. Future versions may support web forms.
 
+## Feature Roadmap
+
+- Add Custom timer web forms to supplement CSV files
+- Add start/warning/ending sounds
+
 ## Stack
 
 - Elixir Phoenix application without no database
 - RESTful homepage and setup pages
 - Dynamic client/server interaction via Phoenix LiveView
+
+## Dev Roadmap
+
+- Possibly transition web deadviews to liveviews
 - Tailwind CSS
 
 ## Dev Notes

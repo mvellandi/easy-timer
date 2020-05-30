@@ -1,6 +1,0 @@
-name,duration_hours,duration_minutes,duration_seconds,start_sound,warning_sound,end_sound,warning_hour,warning_minute,warning_second
-Warmup,0,0,5,TRUE,TRUE,TRUE,0,1,0
-Chest and Triceps,0,0,6,TRUE,TRUE,TRUE,0,1,0
-Abs,0,0,7,TRUE,TRUE,TRUE,0,5,0
-Lower Back,0,0,8,TRUE,TRUE,TRUE,0,1,0
-Jog,0,0,9,TRUE,TRUE,TRUE,0,1,0
