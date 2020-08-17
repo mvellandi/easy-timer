@@ -37,7 +37,7 @@ defmodule EasyTimer.MixProject do
       {:phoenix_live_view, "~> 0.14.4"},
       {:floki, "~> 0.27.0"},
       {:phoenix_html, "~> 2.14"},
-      {:phoenix_live_reload, "~> 1.2"},
+      {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_dashboard, "~> 0.2.7"},
       {:telemetry_metrics, "~> 0.5.0"},
       {:telemetry_poller, "~> 0.5.1"},
