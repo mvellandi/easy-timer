@@ -16,12 +16,12 @@ module.exports = {
       "9xl": "7rem",
     },
     screens: {
-      xs: "410px",
-      sm: "640px",
-      md: "768px",
-      lg: "1024px",
-      xl: "1280px",
-      "2xl": "1650px",
+      xs: "360px",
+      sm: "600px",
+      md: "834px",
+      lg: "1440px",
+      xl: "1920px",
+      "2xl": "2560px",
     },
     extend: {
       spacing: {
