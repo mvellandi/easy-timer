@@ -1,4 +1,5 @@
 # EasyTimer
+Developed in Spring 2020 with the help of my mentor, Lars Wikman 
 
 ## Shareable and Synchronized
 
