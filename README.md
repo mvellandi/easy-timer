@@ -7,7 +7,13 @@ With this web application, you can create live countdown timers to share with ot
 
 ## Screenshots
 
-![home screen](./demo-home.jpg "home screen")
+![home screen](./demo-home.jpg)
+![custom timer](./demo-custom.jpg)
+![quick timer setup](./demo-quick-setup.jpg)
+![quick timer setup success](./demo-quick-setup-success.jpg)
+![nonadmin timer](./demo-nonadmin-timer.jpg)
+![enter admin pin](./demo-timer-admin-pin.jpg)
+![admin timer](./demo-admin-timer.jpg)
 
 ## Options
 
