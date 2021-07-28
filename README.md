@@ -5,6 +5,10 @@ Developed in Spring 2020 with the help of my mentor, Lars Wikman
 
 With this web application, you can create live countdown timers to share with others.
 
+## Screenshots
+
+![home screen](./demo-home.jpg "home screen")
+
 ## Options
 
 - Hours, minutes, seconds (limit to 24 hours)
