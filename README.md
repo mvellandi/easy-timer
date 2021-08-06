@@ -1,5 +1,6 @@
 # EasyTimer
-Developed in Spring 2020 with the help of my mentor, Lars Wikman 
+
+Developed in Spring 2020 with the help of my mentor, Lars Wikman
 
 ## Shareable and Synchronized
 
@@ -7,13 +8,13 @@ With this web application, you can create live countdown timers to share with ot
 
 ## Screenshots
 
-![home screen](./demo-home.jpg)
-![custom timer](./demo-custom.jpg)
-![quick timer setup](./demo-quick-setup.jpg)
-![quick timer setup success](./demo-quick-setup-success.jpg)
-![nonadmin timer](./demo-nonadmin-timer.jpg)
-![enter admin pin](./demo-timer-admin-pin.jpg)
-![admin timer](./demo-admin-timer.jpg)
+![home screen](img/demo-home.jpg)
+![custom timer](img/demo-custom.jpg)
+![quick timer setup](img/demo-quick-setup.jpg)
+![quick timer setup success](img/demo-quick-setup-success.jpg)
+![nonadmin timer](img/demo-nonadmin-timer.jpg)
+![enter admin pin](img/demo-timer-admin-pin.jpg)
+![admin timer](img/demo-admin-timer.jpg)
 
 ## Options
 
