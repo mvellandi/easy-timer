@@ -5,6 +5,16 @@ Developed in Spring 2020 with the help of my mentor, Lars Wikman
 
 With this web application, you can create live countdown timers to share with others.
 
+## Screenshots
+
+![home screen](./demo-home.jpg)
+![custom timer](./demo-custom.jpg)
+![quick timer setup](./demo-quick-setup.jpg)
+![quick timer setup success](./demo-quick-setup-success.jpg)
+![nonadmin timer](./demo-nonadmin-timer.jpg)
+![enter admin pin](./demo-timer-admin-pin.jpg)
+![admin timer](./demo-admin-timer.jpg)
+
 ## Options
 
 - Hours, minutes, seconds (limit to 24 hours)
@@ -41,3 +51,7 @@ With this web application, you can create live countdown timers to share with ot
 - Tailwind configured for Phoenix via [phoenix-config-for-tailwind](https://github.com/jfreeze/phoenix-config-for-tailwind)
 - UI debugging via alternating nested "db{r,b,g}" debug border red, blue, and grey classes
 - UI debugging is activated/deactivated manually by commenting out the "@import './dev.css'" statement in: "assets/css/app.css"
+
+## Bugs
+
+- Nonfunctional "Copy Link" to clipboard button in successful timer creation screen.
