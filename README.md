@@ -1,10 +1,11 @@
-# EasyTimer
+# EasyTimer: Shareable Timers
 
 Developed in Spring 2020 with the help of my mentor, Lars Wikman
 
-## Shareable and Synchronized
+## Summary
 
-With this web application, you can create live countdown timers to share with others.
+With this web application, you can create live countdown timers with web links to share with anyone.
+[See full project details here](http://www.vellandi.net/projects/easy-timer)
 
 ## Screenshots
 
@@ -16,14 +17,13 @@ With this web application, you can create live countdown timers to share with ot
 ![enter admin pin](img/demo-timer-admin-pin.jpg)
 ![admin timer](img/demo-admin-timer.jpg)
 
-## Options
+## Features
 
-- Hours, minutes, seconds (limit to 24 hours)
-- A public web link to share with anyone
+- A public web link to share with anyone in the world
+- Setup single or multiple timers in a series.
+- Create passcodes to administer a timer from any device, or share control with others
+- Select hours, minutes, seconds (limit to 24 hours)
 - Play, pause, stop, next, and previous controls (admins only)
-- Share admin control via a PIN code
-- **Quick**: single
-- **Custom**: multiple named timers in a series
 
 ## App Notes
 
@@ -31,20 +31,11 @@ With this web application, you can create live countdown timers to share with ot
 - Timers are live for 24 hours before deletion
 - Custom, multi-phase timers currently require setup by uploading a CSV file. Future versions may support web forms.
 
-## Feature Roadmap
-
-- Add Custom timer web forms to supplement CSV files
-- Add start/warning/ending sounds
-
 ## Stack
 
-- Elixir Phoenix application without no database
+- Elixir Phoenix application with no database
 - RESTful homepage and setup pages
-- Dynamic client/server interaction via Phoenix LiveView
-
-## Dev Roadmap
-
-- Possibly transition web deadviews to liveviews
+- Dynamic client/server interaction via Phoenix LiveView for timers
 - Tailwind CSS
 
 ## Dev Notes
